@@ -1,4 +1,7 @@
 
+    known bugs:
+    Removing a map manually and then refreshing won't update the Unknown Map placeholder
+
     next version:
     ability to bring back vanilla maps
     ability to choose server location
