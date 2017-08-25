@@ -108,4 +108,21 @@ public abstract class KF2Files {
         file.close();
     }
     
+    
+    public static void addSubscription(int input) throws Exception {
+        BufferedReader reader = new BufferedReader(new FileReader(Strings.CURRENT_DIRECTORY + KFEngine));
+        String fileContents = "";
+        String readLine;
+        while (!((readLine = reader.readLine()) == null)) {
+            fileContents += readLine + System.lineSeparator();
+            if (readLine.contains(WORKSHOP_HEADER)) {
+                    fileContents += WORKSHOP_SUBSCRIPTION + input + System.lineSeparator();
+            }
+        }
+        reader.close();
+        FileOutputStream file = new FileOutputStream(Strings.CURRENT_DIRECTORY + KFEngine);
+        file.write(fileContents.getBytes());
+        file.close();
+    }
+    
 }

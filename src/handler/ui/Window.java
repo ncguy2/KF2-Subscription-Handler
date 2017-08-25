@@ -33,9 +33,9 @@ public class Window {
         
         window.add(Components.separator());
         
-        window.add(Components.button(Strings.NULL, Strings.WINDOW_BUTTON_RENAME, this));
+        window.add(Components.textField());
         window.add(Components.button(Strings.BUTTON_SAVE, Strings.WINDOW_BUTTON_SAVE, this));
-        window.add(Components.button(Strings.NULL, Strings.WINDOW_BUTTON_DELETE, this));
+        window.add(Components.button(Strings.BUTTON_SUBSCRIBE, Strings.WINDOW_BUTTON_SUBSCRIBE, this));
         window.add(Components.button(Strings.BUTTON_SORT, Strings.WINDOW_BUTTON_SORT, this));
         
         launchThreads();

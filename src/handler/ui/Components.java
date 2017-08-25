@@ -7,6 +7,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 public abstract class Components {
     
@@ -33,9 +34,17 @@ public abstract class Components {
         return button;
     }
     
+    public static JTextField textField() {
+        JTextField textField = new JTextField("Steam Workshop ID here");
+        textField.setName(Strings.TEXTFIELD_SUBSCRIPTION);
+        textField.setPreferredSize(new Dimension(290, 30));
+        textField.setHorizontalAlignment(JTextField.CENTER);
+        return textField;
+    }
+    
     public static Component separator() {
         Component box = Box.createVerticalBox();
-        box.setName("#placeholderBoxId");
+        box.setName("#placeholderSeparator");
         box.setPreferredSize(new Dimension(600, 116));
         return box;
     }

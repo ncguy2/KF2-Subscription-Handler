@@ -35,6 +35,10 @@ public class TaskListener implements ActionListener {
                     new RemoveMapFromCycle(window).start();
                     break;
                     
+                case Strings.BUTTON_SUBSCRIBE:
+                    new AddSubscription(window).start();
+                    break;
+                    
                 case Strings.BUTTON_SAVE:
                     new SaveMapCycle(window).start();
                     break;
