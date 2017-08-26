@@ -6,14 +6,19 @@ package handler.fx.uifx;
 //
 
 import handler.ui.Strings;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 public class FXWindow extends Application {
 
@@ -22,6 +27,9 @@ public class FXWindow extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+
+        TooltipShowDelay(250);
+
         primaryStage.setTitle(Strings.WINDOW_TITLE);
         primaryStage.setResizable(true);
         FXMLLoader loader = new FXMLLoader();
@@ -34,6 +42,24 @@ public class FXWindow extends Application {
         primaryStage.setScene(scene);
         primaryStage.sizeToScene();
         primaryStage.show();
+    }
+
+    private void TooltipShowDelay(int delayMs) {
+        Tooltip tooltip = new Tooltip();
+        try {
+            Field fieldBehavior = tooltip.getClass().getDeclaredField("BEHAVIOR");
+            fieldBehavior.setAccessible(true);
+            Object objBehavior = fieldBehavior.get(tooltip);
+
+            Field fieldTimer = objBehavior.getClass().getDeclaredField("activationTimer");
+            fieldTimer.setAccessible(true);
+            Timeline objTimer = (Timeline) fieldTimer.get(objBehavior);
+
+            objTimer.getKeyFrames().clear();
+            objTimer.getKeyFrames().add(new KeyFrame(Duration.millis(delayMs)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public WindowController GetController() { return controller; }

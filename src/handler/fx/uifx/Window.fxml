@@ -85,12 +85,12 @@
          <children>
             <AnchorPane>
                <children>
-                  <Button fx:id="btnRefreshCycle" mnemonicParsing="false" text="Refresh map cycle" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
+                  <Button fx:id="btnRefreshCycle" mnemonicParsing="false" onAction="#RefreshCycle" text="Refresh map cycle" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
                </children>
             </AnchorPane>
             <AnchorPane GridPane.rowIndex="1">
                <children>
-                  <Button fx:id="btnRemoveSelected" mnemonicParsing="false" text="Remove selected" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
+                  <Button fx:id="btnRemoveSelected" mnemonicParsing="false" onAction="#RemoveSelectedCycle" text="Remove selected" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
                </children>
             </AnchorPane>
          </children>
@@ -117,12 +117,12 @@
             </AnchorPane>
             <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
-                  <Button fx:id="btnSortCycleAlpha" mnemonicParsing="false" text="Sort cycle alphabetically" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
+                  <Button fx:id="btnSortCycleAlpha" mnemonicParsing="false" onAction="#SortCycle" text="Sort cycle alphabetically" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
                </children>
             </AnchorPane>
             <AnchorPane GridPane.columnIndex="1">
                <children>
-                  <Button fx:id="btnSaveCycle" layoutX="4.0" layoutY="14.0" mnemonicParsing="false" text="Save map cycle" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
+                  <Button fx:id="btnSaveCycle" layoutX="4.0" layoutY="14.0" mnemonicParsing="false" onAction="#SaveCycle" text="Save map cycle" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
                </children>
             </AnchorPane>
          </children>

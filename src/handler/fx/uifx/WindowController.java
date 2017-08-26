@@ -6,9 +6,7 @@ package handler.fx.uifx;
 //
 
 import handler.domain.Subscription;
-import handler.fx.task.FXAddMapToCycle;
-import handler.fx.task.FXAddSubscription;
-import handler.fx.task.FXFetchSubscription;
+import handler.fx.task.*;
 import handler.fx.uifx.components.CycleCell;
 import handler.fx.uifx.components.Toast;
 import handler.ui.Strings;
@@ -20,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.net.URL;
@@ -53,15 +52,11 @@ public class WindowController implements Initializable {
     }
 
     public void AddSubscriptionPane(Subscription sub, TitledPane pane) {
-        if (sub.getName().equalsIgnoreCase("[Unknown Subscription]")) {
-            removedPanes.put(sub, pane);
-        }else{
-            accSubscriptions.getPanes().add(pane);
-        }
+        accSubscriptions.getPanes().add(pane);
     }
 
     public void DisplayNotification(String title, String body, Color colour) {
-        new Toast(title, body, null, colour).ShowAndWait();
+        new Toast(title, body, null, colour).ShowAndDismiss(Duration.seconds(5));
     }
 
     @FXML
@@ -86,8 +81,12 @@ public class WindowController implements Initializable {
         dc.setInitialDirectory(new File(Strings.Mutable.WORKING_DIRECTORY));
         File directory = dc.showDialog(context.GetStage());
         // TODO add notification to show to user that the working directory has changed
-        if(directory != null)
+        if(directory != null) {
             Strings.Mutable.WORKING_DIRECTORY = directory.getAbsolutePath();
+            DisplayNotification("New working directory", Strings.Mutable.WORKING_DIRECTORY, Color.AQUAMARINE);
+        }else{
+            DisplayNotification("No working directory, reverting...", Strings.Mutable.WORKING_DIRECTORY, Color.INDIANRED);
+        }
     }
 
     @FXML
@@ -95,14 +94,27 @@ public class WindowController implements Initializable {
         new FXFetchSubscription(context).start();
     }
 
+    @FXML public void RefreshCycle(ActionEvent event) {
+        new FXFetchMapCycle(context).start();
+    }
+
+    @FXML public void SaveCycle(ActionEvent event) {
+        new FXSaveMapCycle(context).start();
+    }
+
+    @FXML public void SortCycle(ActionEvent event) {
+        new FXSortMapCycle(context).start();
+    }
+
+    @FXML
+    public void RemoveSelectedCycle(ActionEvent event) {
+        new FXRemoveMapFromCycle(context).start();
+    }
+
     @FXML
     public SplitPane splitLists;
     @FXML
     public Accordion accSubscriptions;
-    @FXML
-    public Accordion accUnknowns;
-    @FXML
-    public TitledPane paneUnknowns;
     @FXML
     public ListView listCycle;
     @FXML

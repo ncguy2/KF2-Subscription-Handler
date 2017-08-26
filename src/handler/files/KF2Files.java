@@ -7,10 +7,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class KF2Files {
     
@@ -75,9 +72,11 @@ public abstract class KF2Files {
         if (!file.canRead()) throw new Exception(Strings.ERROR_NO_FILE("Cache"));
         for (File folder : file.listFiles()) {
             String subscriptionName = readFileName(folder);
-            if (SUBSCRIPTIONS.containsKey(folder.getName()) && !subscriptionName.equals(Strings.ERROR_NOT_WORKSHOP))
-                SUBSCRIPTIONS.get(folder.getName()).setName(
-                    subscriptionName.replaceAll(".kfm", ""));
+            if (SUBSCRIPTIONS.containsKey(folder.getName()) && !subscriptionName.equals(Strings.ERROR_NOT_WORKSHOP)) {
+                Subscription sub = SUBSCRIPTIONS.get(folder.getName());
+                sub.setName(subscriptionName.replaceAll(".kfm", ""));
+                sub.setOnDisk(true);
+            }
         }
         return SUBSCRIPTIONS;
     }
@@ -107,6 +106,10 @@ public abstract class KF2Files {
         file.write(fileContents.getBytes());
         file.close();
     }
+
+    public static void setMapCycle(List<?> maps) throws Exception {
+        setMapCycle(formatCycleString(maps));
+    }
     
     
     public static void addSubscription(int input) throws Exception {
@@ -124,5 +127,45 @@ public abstract class KF2Files {
         file.write(fileContents.getBytes());
         file.close();
     }
-    
+
+    public static String formatCycleString(List<?> maps) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("GameMapCycles=(Maps=(");
+        for (Object map : maps) {
+            builder.append("\"").append(map.toString()).append("\"").append(",");
+        }
+        builder.deleteCharAt(builder.length() - 1);
+        builder.append("))");
+        return builder.toString();
+    }
+
+    private static List<String> nativeMaps = new ArrayList<>();
+    static {
+        nativeMaps.add("KF-BurningParis");
+        nativeMaps.add("KF-Bioticslab");
+        nativeMaps.add("KF-Outpost");
+        nativeMaps.add("KF-VolterManor");
+        nativeMaps.add("KF-Catacombs");
+        nativeMaps.add("KF-EvacuationPoint");
+        nativeMaps.add("KF-Farmhouse");
+        nativeMaps.add("KF-BlackForest");
+        nativeMaps.add("KF-Prison");
+        nativeMaps.add("KF-ContainmentStation");
+        nativeMaps.add("KF-HostileGrounds");
+        nativeMaps.add("KF-InfernalRealm");
+        nativeMaps.add("KF-ZedLanding");
+        nativeMaps.add("KF-Nuked");
+        nativeMaps.add("KF-TheDescent");
+        nativeMaps.add("KF-TragicKingdom");
+        nativeMaps.add("KF-BioticsLab");
+        nativeMaps.add("KF-Default");
+    }
+
+    public static boolean IsNativeMap(String name) {
+        return nativeMaps.contains(name);
+    }
+    public static int NativeIndex(String name) {
+        return nativeMaps.indexOf(name);
+    }
+
 }

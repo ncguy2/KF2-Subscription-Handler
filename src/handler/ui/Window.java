@@ -2,11 +2,9 @@ package handler.ui;
 
 import handler.task.FetchMapCycle;
 import handler.task.FetchSubscription;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import javax.swing.JFrame;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class Window {
     
@@ -17,6 +15,7 @@ public class Window {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(600, 500));
         frame.setResizable(false);
+        show();
     }
     
     public void show() {

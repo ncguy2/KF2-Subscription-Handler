@@ -7,9 +7,12 @@ package handler.fx.task;
 
 import handler.domain.Subscription;
 import handler.files.KF2Files;
+import handler.fx.IconLoader;
+import handler.fx.Icons;
 import handler.fx.uifx.DetailController;
 import handler.fx.uifx.FXWindow;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
@@ -25,20 +28,19 @@ public class FXFetchSubscription extends FXBackgroundTask {
     public void run() {
         controller.btnSubscribe.setDisable(true);
         controller.btnRefreshSubscriptions.setDisable(true);
-        context.Post(() -> {
-            controller.accSubscriptions.getPanes().removeIf(pane -> pane != controller.paneUnknowns);
-        });
+        controller.accSubscriptions.getPanes().clear();
         try {
             Collection<Subscription> values = KF2Files.getSubscriptions().values();
-            values.forEach(value -> {
-                context.Post(() -> {
-                    controller.AddSubscriptionPane(value, BuildPane(value));
-                });
-            });
-
-            final int unknowns = controller.removedPanes.size();
+            // Unpleasant, but needs to be final to be accessible within the .forEach call
+            final int[] unknowns = {controller.removedPanes.size()};
             context.Post(() -> {
-                controller.DisplayNotification("Unknown subscriptions detected", "We found " + unknowns + " subscriptions that we could not determine properly.", Color.AQUAMARINE);
+                values.forEach(value -> {
+                    TitledPane pane = BuildPane(value);
+                    if(pane.getUserData() != null && "Unknown".equalsIgnoreCase(pane.getUserData().toString()))
+                        unknowns[0]++;
+                    controller.AddSubscriptionPane(value, pane);
+                });
+                controller.DisplayNotification("Unknown subscriptions detected", "We found " + unknowns[0] + " subscriptions that we could not determine properly.", Color.AQUAMARINE);
             });
 
         } catch (Exception e) {
@@ -60,8 +62,15 @@ public class FXFetchSubscription extends FXBackgroundTask {
         if (value.getName().equalsIgnoreCase("[Unknown Subscription]"))
             titledPane.setUserData("Unknown");
 
-
         titledPane.managedProperty().bind(titledPane.visibleProperty());
+
+        if(!value.isOnDisk()) {
+            titledPane.setGraphic(IconLoader.GetIcon(Icons.IN_CLOUD));
+            titledPane.setTooltip(new Tooltip("Not downloaded"));
+        }else if(value.NeedsUpdate()) {
+            titledPane.setGraphic(IconLoader.GetIcon(Icons.DOWNLOAD_AVAILABLE));
+            titledPane.setTooltip(new Tooltip("Needs update"));
+        }
 
         return titledPane;
     }

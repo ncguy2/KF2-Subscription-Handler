@@ -6,22 +6,16 @@ package handler.fx.uifx;
 //
 
 import handler.domain.Subscription;
-import handler.fx.IconLoader;
-import handler.fx.Icons;
 import handler.http.HttpRequest;
 import handler.steam.SteamApi;
-import javafx.animation.FadeTransition;
-import javafx.animation.SequentialTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.List;
@@ -53,10 +47,10 @@ public class DetailController extends GridPane {
 
     public void SetTitlePane(TitledPane pane) {
         this.titlePane = pane;
-        ImageView imageView = IconLoader.GetIcon(Icons.DOWNLOAD_AVAILABLE);
-        pane.setGraphic(imageView);
-        pane.setContentDisplay(ContentDisplay.RIGHT);
-        imageView.setX(pane.getWidth() - imageView.getFitWidth());
+//        ImageView imageView = IconLoader.GetIcon(Icons.DOWNLOAD_AVAILABLE);
+//        pane.setGraphic(imageView);
+//        pane.setContentDisplay(ContentDisplay.RIGHT);
+//        imageView.setX(pane.getWidth() - imageView.getFitWidth());
     }
 
     public void SetSubscription(Subscription sub) {
@@ -77,10 +71,10 @@ public class DetailController extends GridPane {
                 List pub = (List) resp.get("publishedfiledetails");
                 Map o = (Map) pub.get(0);
                 String url = o.get("preview_url").toString();
-                CreateTransition(imageThumb, new Image(url)).play();
+                FXUtils.CreateTransition(imageThumb, new Image(url)).play();
                 String name = o.get("title").toString();
                 fieldSubName.setText(name);
-                Platform.runLater(() -> titlePane.setGraphic(IconLoader.GetIcon(Icons.DOWNLOAD_FINISHED)));
+//                Platform.runLater(() -> titlePane.setGraphic(IconLoader.GetIcon(Icons.DOWNLOAD_FINISHED)));
             }catch (NullPointerException npe) {
                 request.OnFail();
             }
@@ -89,22 +83,8 @@ public class DetailController extends GridPane {
             Platform.runLater(() -> titlePane.setGraphic(null));
         });
         System.out.println(request.GetParameterString());
-        titlePane.setGraphic(IconLoader.GetIcon(Icons.DOWNLOADING));
+//        titlePane.setGraphic(IconLoader.GetIcon(Icons.DOWNLOADING));
         request.Request();
-    }
-
-    // TODO improve transition animation
-    SequentialTransition CreateTransition(final ImageView iv, final Image image) {
-        FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.4), iv);
-        fadeOut.setFromValue(1.0);
-        fadeOut.setToValue(0.0);
-        fadeOut.setOnFinished(e -> iv.setImage(image));
-
-        FadeTransition fadeIn = new FadeTransition(Duration.seconds(0.4), iv);
-        fadeIn.setFromValue(0.0);
-        fadeIn.setToValue(1.0);
-
-        return new SequentialTransition(fadeOut, fadeIn);
     }
 
     @FXML

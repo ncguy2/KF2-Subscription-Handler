@@ -1,6 +1,8 @@
 package handler.fx.uifx.components;
 
+import com.sun.javafx.tk.Toolkit;
 import handler.domain.Subscription;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.WritableImage;
@@ -86,10 +88,21 @@ public class CycleCell extends ListCell<Subscription> {
     @Override
     protected void updateItem(Subscription item, boolean empty) {
         super.updateItem(item, empty);
-        if(empty || item == null) {
-            setText("");
-        }else{
-            setText(item.toString());
+
+        Runnable task = () -> {
+            if(empty || item == null) {
+                setText("");
+            }else{
+                setText(item.toString());
+            }
+        };
+
+        // Intelligent thread safety, will post the task to the main
+        // FX thread only if this is invoked on a different thread
+        if(Toolkit.getToolkit().isFxUserThread()) {
+            task.run();
+        } else {
+            Platform.runLater(task);
         }
     }
 }
