@@ -15,7 +15,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.util.Duration;
@@ -112,6 +111,11 @@ public class WindowController implements Initializable {
     }
 
     @FXML
+    public void LoadCollection(ActionEvent event) {
+        new FXLoadCollection(context).start();
+    }
+
+    @FXML
     public SplitPane splitLists;
     @FXML
     public Accordion accSubscriptions;
@@ -134,11 +138,12 @@ public class WindowController implements Initializable {
     @FXML
     public Button btnSaveCycle;
     @FXML
+    public TextField fieldCollection;
+    @FXML
     public MenuItem menuItemResetSplit;
     @FXML
     public MenuItem menuItemSetDirectory;
-    @FXML
-    public Pane pnlNotification;
+
 
 
 

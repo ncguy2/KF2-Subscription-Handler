@@ -5,11 +5,10 @@ package handler.steam;
 // Created at: 25/08/2017
 //
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import handler.domain.Subscription;
 import handler.http.HttpMethod;
 import handler.http.HttpRequest;
+import handler.utils.JsonSerializer;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,11 +22,46 @@ public class SteamApi {
         static final String API_ROOT = "https://api.steampowered.com";
         static final String REMOTE_STORAGE_API = API_ROOT+"/ISteamRemoteStorage";
 
-        public static final String GET_PUBLISHED_FILE_DETAILS = REMOTE_STORAGE_API+"/GetPublishedFileDetails/v1/";
+        static final String API_VERSION = "/v1/";
+
+        public static final String GET_PUBLISHED_FILE_DETAILS = REMOTE_STORAGE_API+"/GetPublishedFileDetails" + API_VERSION;
+        public static final String GET_COLLECTION_DETAILS = REMOTE_STORAGE_API+"/GetCollectionDetails" + API_VERSION;
 
     }
 
     public static class Functions {
+
+
+        public static HttpRequest<SubscriptionDetails.SubscriptionDetailSet> GetSubscriptionSet(long... itemIds) {
+            HttpRequest<SubscriptionDetails.SubscriptionDetailSet> request = new HttpRequest<>();
+            request.setHref(Bindings.GET_PUBLISHED_FILE_DETAILS);
+            request.SetMethod(HttpMethod.POST);
+            request.SetParam("key", ApiKey());
+            request.SetParam("itemcount", itemIds.length);
+            request.SetParam("format", "json");
+            for (int i = 0; i < itemIds.length; i++)
+                request.SetParam(String.format("publishedfileids[%s]", String.valueOf(i)), itemIds[i]);
+            request.SetResponseMapper(str -> {
+                SubscriptionDetails.SubscriptionDetailSet.Wrapper wrapper = JsonSerializer.instance().FromJson(str, SubscriptionDetails.SubscriptionDetailSet.Wrapper.class);
+                return wrapper.set;
+            });
+            return request;
+        }
+
+        public static HttpRequest<CollectionDetails.CollectionDetailSet> GetCollectionDetails(long collectionId) {
+            HttpRequest<CollectionDetails.CollectionDetailSet> request = new HttpRequest<>();
+            request.setHref(Bindings.GET_COLLECTION_DETAILS);
+            request.SetMethod(HttpMethod.POST);
+            request.SetParam("key", SteamApi.ApiKey());
+            request.SetParam("collectioncount", 1);
+            request.SetParam("format", "json");
+            request.SetParam("publishedfileids[0]", String.valueOf(collectionId));
+            request.SetResponseMapper(str -> {
+                CollectionDetails.CollectionDetailSet.Wrapper wrapper = JsonSerializer.instance().FromJson(str, CollectionDetails.CollectionDetailSet.Wrapper.class);
+                return wrapper.set;
+            });
+            return request;
+        }
 
         public static HttpRequest<Map> GetSingleItem(Subscription sub) {
             HttpRequest<Map> request = new HttpRequest<>();
@@ -37,10 +71,7 @@ public class SteamApi {
             request.SetParam("itemcount", 1);
             request.SetParam("format", "json");
             request.SetParam("publishedfileids[0]", sub.getId());
-            GsonBuilder gb = new GsonBuilder();
-            gb.setPrettyPrinting();
-            Gson gson = gb.create();
-            request.SetResponseMapper(str -> gson.fromJson(str, Map.class));
+            request.SetResponseMapper(str -> JsonSerializer.instance().FromJson(str, Map.class));
             return request;
         }
 

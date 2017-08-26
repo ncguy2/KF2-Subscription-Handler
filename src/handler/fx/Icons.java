@@ -6,6 +6,7 @@ public enum Icons {
     DOWNLOAD_AVAILABLE("download_available.png"),
     DOWNLOAD_FINISHED("download_finished.png"),
     IN_CLOUD("download_available.png"),
+    KF2_LOGO("kf2_logo.jpg"),
     ;
 
     Icons(String path) {
