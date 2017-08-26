@@ -28,7 +28,7 @@ public abstract class KF2Files {
     
     
     public static List<String> getMapCycle() throws Exception {
-        String maps = readMapCycle(new File(Strings.CURRENT_DIRECTORY + KFGame)).split("\\(")[2].replaceAll("\"", "");
+        String maps = readMapCycle(new File(Strings.Mutable.WORKING_DIRECTORY + KFGame)).split("\\(")[2].replaceAll("\"", "");
         return Arrays.asList(maps.replaceAll("\\)", "").split(","));
     }
     
@@ -48,8 +48,8 @@ public abstract class KF2Files {
     
     
     public static Map<String, Subscription> getSubscriptions() throws Exception {
-        readSubscriptions(new File(Strings.CURRENT_DIRECTORY + KFEngine));
-        return readSubscriptionNames(Paths.get(Strings.CURRENT_DIRECTORY + Cache).toFile());
+        readSubscriptions(new File(Strings.Mutable.WORKING_DIRECTORY + KFEngine));
+        return readSubscriptionNames(Paths.get(Strings.Mutable.WORKING_DIRECTORY + Cache).toFile());
     }
     
     private static Map<String, Subscription> readSubscriptions(File file) throws Exception {
@@ -95,7 +95,7 @@ public abstract class KF2Files {
     
     
     public static void setMapCycle(String input) throws Exception {
-        BufferedReader reader = new BufferedReader(new FileReader(Strings.CURRENT_DIRECTORY + KFGame));
+        BufferedReader reader = new BufferedReader(new FileReader(Strings.Mutable.WORKING_DIRECTORY + KFGame));
         String fileContents = "";
         String readLine;
         while (!((readLine = reader.readLine()) == null)) {
@@ -103,14 +103,14 @@ public abstract class KF2Files {
             else fileContents += readLine + System.lineSeparator();
         }
         reader.close();
-        FileOutputStream file = new FileOutputStream(Strings.CURRENT_DIRECTORY + KFGame);
+        FileOutputStream file = new FileOutputStream(Strings.Mutable.WORKING_DIRECTORY + KFGame);
         file.write(fileContents.getBytes());
         file.close();
     }
     
     
     public static void addSubscription(int input) throws Exception {
-        BufferedReader reader = new BufferedReader(new FileReader(Strings.CURRENT_DIRECTORY + KFEngine));
+        BufferedReader reader = new BufferedReader(new FileReader(Strings.Mutable.WORKING_DIRECTORY + KFEngine));
         String fileContents = "";
         String readLine;
         while (!((readLine = reader.readLine()) == null)) {
@@ -120,7 +120,7 @@ public abstract class KF2Files {
             }
         }
         reader.close();
-        FileOutputStream file = new FileOutputStream(Strings.CURRENT_DIRECTORY + KFEngine);
+        FileOutputStream file = new FileOutputStream(Strings.Mutable.WORKING_DIRECTORY + KFEngine);
         file.write(fileContents.getBytes());
         file.close();
     }

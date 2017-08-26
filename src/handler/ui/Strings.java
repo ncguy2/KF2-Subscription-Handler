@@ -35,5 +35,11 @@ public abstract class Strings {
     public static final String ERROR_NO_FILE(String fileName) {
         return "(" + fileName + ") File or privileges missing.";
     }
+
+    public static class Mutable {
+
+        public static String WORKING_DIRECTORY = CURRENT_DIRECTORY;
+
+    }
     
 }

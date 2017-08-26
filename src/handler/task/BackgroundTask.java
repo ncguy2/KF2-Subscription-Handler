@@ -1,18 +1,21 @@
 package handler.task;
 
 import handler.ui.Window;
+
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JList;
 
-public abstract class BackgroundTask extends Thread {
-    
+public abstract class BackgroundTask extends BaseBackgroundTask<Window> {
+
+    // Retained to maintain compatibility with existing tasks
     protected final Window window;
-    
+
     public BackgroundTask(Window window) {
+        super(window);
         this.window = window;
     }
-    
+
     protected List<Object> arrayToList(JList arg) {
         List<Object> list = new ArrayList<>();
         try {

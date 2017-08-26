@@ -1,6 +1,8 @@
 package handler.domain;
 
-public class Subscription {
+import java.io.Serializable;
+
+public class Subscription implements Serializable {
     
     private final String workshopId;
     private String name;
@@ -29,8 +31,11 @@ public class Subscription {
     
     @Override
     public boolean equals(Object object) {
+        if(object == null) return false;
+        if(!(object instanceof Subscription)) return false;
         Subscription subscription = (Subscription)object;
         return subscription.getId().equals(workshopId);
     }
+
     
 }
