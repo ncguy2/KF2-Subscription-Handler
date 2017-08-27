@@ -58,6 +58,10 @@ public class DetailController extends GridPane {
         fieldSubName.setText(sub.getName());
     }
 
+    public void SetHasLoaded(boolean state) {
+        loaded = state;
+    }
+
     public void Load() {
         if(loaded) return;
         if(sub == null) return;

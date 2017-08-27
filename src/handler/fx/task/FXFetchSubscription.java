@@ -11,9 +11,9 @@ import handler.fx.IconLoader;
 import handler.fx.Icons;
 import handler.fx.uifx.DetailController;
 import handler.fx.uifx.FXWindow;
+import javafx.scene.Node;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 import java.util.Collection;
@@ -30,6 +30,21 @@ public class FXFetchSubscription extends FXBackgroundTask {
         controller.btnRefreshSubscriptions.setDisable(true);
         controller.accSubscriptions.getPanes().clear();
         try {
+
+            int index = 0;
+            for (String s : KF2Files.GetNativeMaps()) {
+                Subscription sub = new Subscription(String.valueOf(index++));
+                sub.setName(s);
+                sub.setNative(true);
+                sub.setOnDisk(true);
+
+                TitledPane pane = BuildPane(sub);
+                Node content = pane.getContent();
+                if(content instanceof DetailController)
+                    ((DetailController)content).SetHasLoaded(true);
+                context.Post(() -> controller.AddSubscriptionPane(sub, pane));
+            }
+
             Collection<Subscription> values = KF2Files.getSubscriptions().values();
             context.Post(() -> {
                 // Unpleasant, but needs to be final to be mutable within the .forEach call
@@ -55,16 +70,22 @@ public class FXFetchSubscription extends FXBackgroundTask {
         content.SetSubscription(value);
         final TitledPane titledPane = new TitledPane(value.getName(), content);
         content.SetTitlePane(titledPane);
-        titledPane.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            content.Load();
+
+        titledPane.expandedProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue)
+                content.Load();
         });
 
         if (value.getName().equalsIgnoreCase("[Unknown Subscription]"))
             titledPane.setUserData("Unknown");
 
-        titledPane.managedProperty().bind(titledPane.visibleProperty());
+//        titledPane.managedProperty().bindBidirectional(titledPane.visibleProperty());
+        titledPane.minHeightProperty().bindBidirectional(titledPane.maxHeightProperty());
 
-        if(!value.isOnDisk()) {
+        if(value.isNative()) {
+            titledPane.setGraphic(IconLoader.GetIcon(Icons.IS_NATIVE));
+            titledPane.setTooltip(new Tooltip("Vanilla"));
+        }else if(!value.isOnDisk()) {
             titledPane.setGraphic(IconLoader.GetIcon(Icons.IN_CLOUD));
             titledPane.setTooltip(new Tooltip("Not downloaded"));
         }else if(value.NeedsUpdate()) {

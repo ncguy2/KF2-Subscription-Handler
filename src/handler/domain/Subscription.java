@@ -8,12 +8,14 @@ public class Subscription implements Serializable {
     private String name;
     private boolean onDisk;
     private boolean needsUpdate;
+    private boolean isNative;
 
     public Subscription(String workshopId) {
         this.workshopId = workshopId;
         name = "[Unknown Subscription]";
         onDisk = false;
         needsUpdate = false;
+        isNative = false;
     }
     
     public String getId() {
@@ -35,6 +37,10 @@ public class Subscription implements Serializable {
     public boolean NeedsUpdate() { return needsUpdate; }
 
     public void setNeedsUpdate(boolean needsUpdate) { this.needsUpdate = needsUpdate; }
+
+    public boolean isNative() { return isNative; }
+
+    public void setNative(boolean aNative) { isNative = aNative; }
 
     @Override
     public String toString() {

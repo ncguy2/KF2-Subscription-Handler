@@ -11,8 +11,10 @@ import handler.http.HttpRequest;
 import handler.utils.JsonSerializer;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 
 public class SteamApi {
@@ -33,10 +35,15 @@ public class SteamApi {
 
 
         public static HttpRequest<SubscriptionDetails.SubscriptionDetailSet> GetSubscriptionSet(long... itemIds) {
+            Optional<String> key = ApiKey();
+            if(!key.isPresent()) {
+                System.out.println("No API key provided");
+                return null;
+            }
             HttpRequest<SubscriptionDetails.SubscriptionDetailSet> request = new HttpRequest<>();
             request.setHref(Bindings.GET_PUBLISHED_FILE_DETAILS);
             request.SetMethod(HttpMethod.POST);
-            request.SetParam("key", ApiKey());
+            request.SetParam("key", key.get());
             request.SetParam("itemcount", itemIds.length);
             request.SetParam("format", "json");
             for (int i = 0; i < itemIds.length; i++)
@@ -49,10 +56,15 @@ public class SteamApi {
         }
 
         public static HttpRequest<CollectionDetails.CollectionDetailSet> GetCollectionDetails(long collectionId) {
+            Optional<String> key = ApiKey();
+            if(!key.isPresent()) {
+                System.out.println("No API key provided");
+                return null;
+            }
             HttpRequest<CollectionDetails.CollectionDetailSet> request = new HttpRequest<>();
             request.setHref(Bindings.GET_COLLECTION_DETAILS);
             request.SetMethod(HttpMethod.POST);
-            request.SetParam("key", SteamApi.ApiKey());
+            request.SetParam("key", key.get());
             request.SetParam("collectioncount", 1);
             request.SetParam("format", "json");
             request.SetParam("publishedfileids[0]", String.valueOf(collectionId));
@@ -64,10 +76,15 @@ public class SteamApi {
         }
 
         public static HttpRequest<Map> GetSingleItem(Subscription sub) {
+            Optional<String> key = ApiKey();
+            if(!key.isPresent()) {
+                System.out.println("No API key provided");
+                return null;
+            }
             HttpRequest<Map> request = new HttpRequest<>();
             request.setHref(SteamApi.Bindings.GET_PUBLISHED_FILE_DETAILS);
             request.SetMethod(HttpMethod.POST);
-            request.SetParam("key", SteamApi.ApiKey());
+            request.SetParam("key", key.get());
             request.SetParam("itemcount", 1);
             request.SetParam("format", "json");
             request.SetParam("publishedfileids[0]", sub.getId());
@@ -86,31 +103,51 @@ public class SteamApi {
     static Properties properties;
 
     static {
-        properties = new Properties();
         try{
-            properties.load(new FileInputStream("steam.props"));
+            LoadProperties();
         }catch(IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
+    public static void LoadProperties() throws IOException {
+        GetProperties().load(new FileInputStream("steam.props"));
+    }
+    public static void SetProperty(String key, String value) {
+        SetProperty(key, value, true);
+    }
+    public static void SetProperty(String key, String value, boolean save) {
+        GetProperties().setProperty(key, value);
+        if(!save) return;
+        try {
+            GetProperties().store(new FileOutputStream("steam.props"), "Steam API authentication");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static Properties GetProperties() {
+        if (properties == null)
+            properties = new Properties();
+        return properties;
+    }
+
     public static final String API_KEY_PROP_NAME = "ApiKey";
     public static final String STEAM_ID_PROP_NAME = "SteamId";
 
-    public static String ApiKey() {
+    public static Optional<String> ApiKey() {
         final String defaultValue = "No Key";
-        String key = properties.getProperty(API_KEY_PROP_NAME, defaultValue);
+        String key = GetProperties().getProperty(API_KEY_PROP_NAME, defaultValue);
         if(key.equalsIgnoreCase(defaultValue))
-            throw new RuntimeException(String.format("No %s property found", API_KEY_PROP_NAME));
-        return key;
+            return Optional.empty();
+        return Optional.of(key);
     }
 
-    public static String SteamID() {
+    public static Optional<String> SteamID() {
         final String defaultValue = "No Key";
-        String key = properties.getProperty(STEAM_ID_PROP_NAME, defaultValue);
+        String key = GetProperties().getProperty(STEAM_ID_PROP_NAME, defaultValue);
         if(key.equalsIgnoreCase(defaultValue))
-            throw new RuntimeException(String.format("No %s property found", STEAM_ID_PROP_NAME));
-        return key;
+            return Optional.empty();
+        return Optional.of(key);
     }
 
 }
