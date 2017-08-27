@@ -9,12 +9,18 @@ import handler.domain.Subscription;
 import handler.fx.task.*;
 import handler.fx.uifx.components.CycleCell;
 import handler.fx.uifx.components.Toast;
+import handler.steam.SteamCache;
+import handler.steam.SubscriptionDetails;
 import handler.ui.Strings;
+import handler.utils.JsonSerializer;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.util.Duration;
@@ -22,6 +28,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class WindowController implements Initializable {
 
@@ -42,6 +49,11 @@ public class WindowController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("Window controller initialized");
         listCycle.setCellFactory(param -> new CycleCell());
+        cachelistItems.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> CacheItemSelected());
+        cachelistImages.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> CacheImageSelected());
+
+        cacheimgImage.fitWidthProperty().bind(cacheimgAnchorParent.widthProperty());
+        cacheimgImage.setManaged(false);
     }
 
     public void AddSubToCycle(Subscription sub) {
@@ -82,7 +94,15 @@ public class WindowController implements Initializable {
         // TODO add notification to show to user that the working directory has changed
         if(directory != null) {
             Strings.Mutable.WORKING_DIRECTORY = directory.getAbsolutePath();
+            SteamCache.PopulateIndex();
             DisplayNotification("New working directory", Strings.Mutable.WORKING_DIRECTORY, Color.AQUAMARINE);
+            cachelistItems.getItems().setAll(SteamCache.GetItemCacheAsSet().details);
+
+            HashMap<String, String> imageCache = SteamCache.GetImageCache();
+            cachelistImages.getItems().setAll(imageCache.entrySet()
+                    .stream()
+                    .map(entry -> new ImageString(entry.getKey(), entry.getValue()))
+                    .collect(Collectors.toList()));
         }else{
             DisplayNotification("No working directory, reverting...", Strings.Mutable.WORKING_DIRECTORY, Color.INDIANRED);
         }
@@ -144,9 +164,60 @@ public class WindowController implements Initializable {
     @FXML
     public MenuItem menuItemSetDirectory;
 
+    public void CacheItemSelected() {
+        Object selected = cachelistItems.getSelectionModel().getSelectedItem();
+        if(selected == null) return;
+        if(selected instanceof SubscriptionDetails) {
+            SubscriptionDetails details = (SubscriptionDetails) selected;
+            String s = JsonSerializer.instance().ToJson(details);
+            cachetxtItemJson.setText(s);
+        }
+    }
 
+    public void CacheImageSelected() {
+        Object selected = cachelistImages.getSelectionModel().getSelectedItem();
+        if(selected == null) return;
+        if(selected instanceof ImageString) {
+            ImageString s = (ImageString) selected;
+            Image image = new Image(s.filePath);
+            cacheimgImage.setImage(image);
+        }
+    }
 
+    @FXML
+    public ListView cachelistItems;
+    @FXML
+    public TextArea cachetxtItemJson;
 
+    @FXML
+    public ListView cachelistImages;
+    @FXML
+    public ImageView cacheimgImage;
 
+    @FXML
+    public AnchorPane cacheimgAnchorParent;
+
+    public static class ImageString {
+        public String string;
+        public String filePath;
+        protected String display;
+
+        public ImageString(String string, String filePath) {
+            this.string = string;
+            this.filePath = "file:///"+filePath;
+
+            List<String> split = new ArrayList<>();
+            Collections.addAll(split, string.split("\\."));
+            split = split.stream()
+                    .filter(s -> !s.isEmpty())
+                    .collect(Collectors.toList());
+            display = split.get(split.size()-2);
+        }
+
+        @Override
+        public String toString() {
+            return display;
+        }
+    }
 
 }

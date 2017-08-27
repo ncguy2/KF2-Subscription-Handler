@@ -8,147 +8,266 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="handler.fx.uifx.WindowController">
-  <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
-  </columnConstraints>
-  <rowConstraints>
-    <RowConstraints />
-    <RowConstraints minHeight="10.0" percentHeight="65.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-      <RowConstraints minHeight="10.0" percentHeight="15.0" prefHeight="30.0" vgrow="SOMETIMES" />
-  </rowConstraints>
+<GridPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="handler.fx.uifx.WindowController">
+   <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+   </rowConstraints>
    <children>
-      <AnchorPane GridPane.columnSpan="2" GridPane.rowIndex="1">
+      <AnchorPane GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
          <children>
-            <SplitPane fx:id="splitLists" dividerPositions="0.5" prefHeight="134.0" prefWidth="317.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <items>
-                  <ScrollPane>
-                     <content>
-                        <AnchorPane prefHeight="304.0" prefWidth="507.0">
-                           <children>
-                              <Accordion fx:id="accSubscriptions" layoutY="-7.0" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-7.0" />
-                           </children>
-                        </AnchorPane>
-                     </content>
-                  </ScrollPane>
-                  <ScrollPane>
-                     <content>
-                        <AnchorPane prefHeight="535.0" prefWidth="508.0">
-                           <children>
-                              <ListView fx:id="listCycle" prefHeight="246.0" prefWidth="508.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                           </children>
-                        </AnchorPane>
-                     </content>
-                  </ScrollPane>
-               </items>
-            </SplitPane>
+            <MenuBar AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem fx:id="menuItemResetSplit" mnemonicParsing="false" onAction="#menuItemResetSplitAction" text="Reset splitpane" />
+                        <MenuItem fx:id="menuItemSetDirectory" mnemonicParsing="false" onAction="#SetDirectory" text="Set working directory" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
          </children>
       </AnchorPane>
-      <GridPane GridPane.rowIndex="2">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
+      <AnchorPane GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
          <children>
-            <AnchorPane GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
-               <children>
-                  <Button fx:id="btnRefreshSubscriptions" mnemonicParsing="false" onAction="#RefreshSubscriptions" text="Refresh Subscriptions" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
-               </children>
-            </AnchorPane>
-            <AnchorPane GridPane.rowIndex="1">
-               <children>
-                  <Button fx:id="btnAddSelected" mnemonicParsing="false" onAction="#btnAddSelectedClick" text="Add selected" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
-               </children>
-            </AnchorPane>
+            <TabPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <tabs>
+                  <Tab closable="false" text="Map cycle">
+                     <content>
+                        <AnchorPane>
+                           <children>
+                              <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints />
+                                  <RowConstraints minHeight="10.0" percentHeight="65.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" percentHeight="15.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <AnchorPane GridPane.columnSpan="2" GridPane.rowIndex="1">
+                                       <children>
+                                          <SplitPane fx:id="splitLists" dividerPositions="0.5" prefHeight="134.0" prefWidth="317.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <items>
+                                                <ScrollPane fitToHeight="true" fitToWidth="true">
+                                                   <content>
+                                                      <AnchorPane prefHeight="304.0" prefWidth="507.0">
+                                                         <children>
+                                                            <Accordion fx:id="accSubscriptions" layoutY="-7.0" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-7.0" />
+                                                         </children>
+                                                      </AnchorPane>
+                                                   </content>
+                                                </ScrollPane>
+                                                <ScrollPane fitToHeight="true" fitToWidth="true">
+                                                   <content>
+                                                      <AnchorPane prefHeight="535.0" prefWidth="508.0">
+                                                         <children>
+                                                            <ListView fx:id="listCycle" prefHeight="246.0" prefWidth="508.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                         </children>
+                                                      </AnchorPane>
+                                                   </content>
+                                                </ScrollPane>
+                                             </items>
+                                          </SplitPane>
+                                       </children>
+                                    </AnchorPane>
+                                    <GridPane GridPane.rowIndex="2">
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <AnchorPane GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                                             <children>
+                                                <Button fx:id="btnRefreshSubscriptions" mnemonicParsing="false" onAction="#RefreshSubscriptions" text="Refresh Subscriptions" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane GridPane.rowIndex="1">
+                                             <children>
+                                                <Button fx:id="btnAddSelected" mnemonicParsing="false" onAction="#btnAddSelectedClick" text="Add selected" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
+                                             </children>
+                                          </AnchorPane>
+                                       </children>
+                                    </GridPane>
+                                    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <AnchorPane>
+                                             <children>
+                                                <Button fx:id="btnRefreshCycle" mnemonicParsing="false" onAction="#RefreshCycle" text="Refresh map cycle" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane GridPane.rowIndex="1">
+                                             <children>
+                                                <Button fx:id="btnRemoveSelected" mnemonicParsing="false" onAction="#RemoveSelectedCycle" text="Remove selected" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
+                                             </children>
+                                          </AnchorPane>
+                                       </children>
+                                    </GridPane>
+                                    <GridPane prefHeight="247.0" prefWidth="933.0" GridPane.columnSpan="2" GridPane.rowIndex="4">
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" percentHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" percentHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <AnchorPane GridPane.rowIndex="1">
+                                             <children>
+                                                <Button fx:id="btnSubscribe" mnemonicParsing="false" onAction="#AddSubscription" text="Subscribe to map" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane>
+                                             <children>
+                                                <TextField fx:id="fieldSubscription" promptText="Steam workshop ID here" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane GridPane.columnIndex="3">
+                                             <children>
+                                                <Button fx:id="btnSortCycleAlpha" layoutX="104.0" layoutY="7.0" mnemonicParsing="false" onAction="#SortCycle" text="Sort cycle alphabetically" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane GridPane.columnIndex="2">
+                                             <children>
+                                                <Button fx:id="btnSaveCycle" layoutX="4.0" layoutY="14.0" mnemonicParsing="false" onAction="#SaveCycle" text="Save map cycle" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane GridPane.columnIndex="1">
+                                             <children>
+                                                <TextField fx:id="fieldCollection" promptText="Steam workshop collection ID here" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                             <children>
+                                                <Button mnemonicParsing="false" onAction="#LoadCollection" text="Load collection" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
+                                             </children>
+                                          </AnchorPane>
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
+                  <Tab closable="false" text="Local cache">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" stylesheets="@/css/LocalCache.css">
+                           <children>
+                              <TabPane layoutX="92.0" layoutY="81.0" prefHeight="200.0" prefWidth="200.0" rotateGraphic="true" side="LEFT" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <tabs>
+                                  <Tab closable="false" text="Items">
+                                    <content>
+                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="768.0" prefWidth="904.0">
+                                             <children>
+                                                <SplitPane dividerPositions="0.29797979797979796" layoutX="285.0" layoutY="255.0" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                  <items>
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                         <children>
+                                                            <ScrollPane fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <content>
+                                                                  <ListView fx:id="cachelistItems" prefHeight="200.0" prefWidth="200.0" />
+                                                               </content>
+                                                            </ScrollPane>
+                                                         </children>
+                                                      </AnchorPane>
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                         <children>
+                                                            <GridPane layoutX="104.0" layoutY="121.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                              <columnConstraints>
+                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                              </columnConstraints>
+                                                              <rowConstraints>
+                                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                              </rowConstraints>
+                                                               <children>
+                                                                  <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
+                                                                    <content>
+                                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+                                                                           <children>
+                                                                              <TextArea fx:id="cachetxtItemJson" editable="false" layoutX="164.0" layoutY="168.0" prefHeight="200.0" prefWidth="200.0" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                    </content>
+                                                                  </ScrollPane>
+                                                               </children>
+                                                            </GridPane>
+                                                         </children>
+                                                      </AnchorPane>
+                                                  </items>
+                                                </SplitPane>
+                                             </children>
+                                          </AnchorPane>
+                                    </content>
+                                  </Tab>
+                                  <Tab closable="false" text="Images">
+                                    <content>
+                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                             <children>
+                                                <SplitPane dividerPositions="0.29797979797979796" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <items>
+                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                         <children>
+                                                            <ScrollPane fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <content>
+                                                                  <ListView fx:id="cachelistImages" prefHeight="200.0" prefWidth="200.0" />
+                                                               </content>
+                                                            </ScrollPane>
+                                                         </children>
+                                                      </AnchorPane>
+                                                      <AnchorPane fx:id="cacheimgAnchorParent">
+                                                         <children>
+                                                            <ImageView fx:id="cacheimgImage" fitHeight="761.0" fitWidth="689.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                         </children>
+                                                      </AnchorPane>
+                                                   </items>
+                                                </SplitPane>
+                                             </children>
+                                          </AnchorPane>
+                                    </content>
+                                  </Tab>
+                                </tabs>
+                              </TabPane>
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+               </tabs>
+            </TabPane>
          </children>
-      </GridPane>
-      <GridPane GridPane.columnIndex="1" GridPane.rowIndex="2">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <AnchorPane>
-               <children>
-                  <Button fx:id="btnRefreshCycle" mnemonicParsing="false" onAction="#RefreshCycle" text="Refresh map cycle" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
-               </children>
-            </AnchorPane>
-            <AnchorPane GridPane.rowIndex="1">
-               <children>
-                  <Button fx:id="btnRemoveSelected" mnemonicParsing="false" onAction="#RemoveSelectedCycle" text="Remove selected" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
-               </children>
-            </AnchorPane>
-         </children>
-      </GridPane>
-      <GridPane prefHeight="247.0" prefWidth="933.0" GridPane.columnSpan="2" GridPane.rowIndex="4">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" percentHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" percentHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <AnchorPane GridPane.rowIndex="1">
-               <children>
-                  <Button fx:id="btnSubscribe" mnemonicParsing="false" onAction="#AddSubscription" text="Subscribe to map" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
-               </children>
-            </AnchorPane>
-            <AnchorPane>
-               <children>
-                  <TextField fx:id="fieldSubscription" promptText="Steam workshop ID here" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
-               </children>
-            </AnchorPane>
-            <AnchorPane GridPane.columnIndex="3">
-               <children>
-                  <Button fx:id="btnSortCycleAlpha" layoutX="104.0" layoutY="7.0" mnemonicParsing="false" onAction="#SortCycle" text="Sort cycle alphabetically" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
-               </children>
-            </AnchorPane>
-            <AnchorPane GridPane.columnIndex="2">
-               <children>
-                  <Button fx:id="btnSaveCycle" layoutX="4.0" layoutY="14.0" mnemonicParsing="false" onAction="#SaveCycle" text="Save map cycle" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
-               </children>
-            </AnchorPane>
-            <AnchorPane GridPane.columnIndex="1">
-               <children>
-                  <TextField fx:id="fieldCollection" promptText="Steam workshop collection ID here" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
-               </children>
-            </AnchorPane>
-            <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1">
-               <children>
-                  <Button mnemonicParsing="false" onAction="#LoadCollection" text="Load collection" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
-               </children>
-            </AnchorPane>
-         </children>
-      </GridPane>
-      <MenuBar GridPane.columnSpan="2">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem fx:id="menuItemResetSplit" mnemonicParsing="false" onAction="#menuItemResetSplitAction" text="Reset splitpane" />
-                  <MenuItem fx:id="menuItemSetDirectory" mnemonicParsing="false" onAction="#SetDirectory" text="Set working directory" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
+      </AnchorPane>
    </children>
 </GridPane>

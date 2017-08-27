@@ -2,7 +2,9 @@ package handler.steam;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SubscriptionDetails {
 
@@ -99,11 +101,17 @@ public class SubscriptionDetails {
         public int resultCount;
 
         @SerializedName("publishedfiledetails")
-        public List<SubscriptionDetails> details;
+        public List<SubscriptionDetails> details = new ArrayList<>();
 
         public static class Wrapper {
             @SerializedName("response")
             public SubscriptionDetailSet set;
+        }
+
+        public void Merge(SubscriptionDetailSet other) {
+            details.addAll(other.details.stream()
+                    .filter(d -> this.details.contains(d))
+                    .collect(Collectors.toList()));
         }
 
     }

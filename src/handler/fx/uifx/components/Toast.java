@@ -81,27 +81,27 @@ public class Toast {
         switch (nType) {
 
             case INFORMATION:
-                imageLocation = getClass().getResource("/tray/resources/info.png");
+                imageLocation = getClass().getResource("/resources/tray/info.png");
                 paintHex = "#2C54AB";
                 break;
 
             case NOTICE:
-                imageLocation = getClass().getResource("/tray/resources/notice.png");
+                imageLocation = getClass().getResource("/resources/tray/notice.png");
                 paintHex = "#8D9695";
                 break;
 
             case SUCCESS:
-                imageLocation = getClass().getResource("/tray/resources/success.png");
+                imageLocation = getClass().getResource("/resources/tray/success.png");
                 paintHex = "#009961";
                 break;
 
             case WARNING:
-                imageLocation = getClass().getResource("/tray/resources/warning.png");
+                imageLocation = getClass().getResource("/resources/tray/warning.png");
                 paintHex = "#E23E0A";
                 break;
 
             case ERROR:
-                imageLocation = getClass().getResource("/tray/resources/error.png");
+                imageLocation = getClass().getResource("/resources/tray/error.png");
                 paintHex = "#CC0033";
                 break;
 

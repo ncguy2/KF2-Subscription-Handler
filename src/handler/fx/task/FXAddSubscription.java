@@ -1,17 +1,15 @@
 package handler.fx.task;
 
-import handler.domain.Subscription;
 import handler.files.KF2Files;
+import handler.fx.IconLoader;
+import handler.fx.Icons;
 import handler.fx.uifx.FXUtils;
 import handler.fx.uifx.FXWindow;
-import handler.fx.uifx.WindowController;
 import handler.fx.uifx.WorkshopDialog;
-import handler.http.HttpRequest;
-import handler.steam.SteamApi;
-import javafx.scene.image.Image;
+import handler.steam.SteamCache;
+import handler.steam.SubscriptionDetails;
 
-import java.util.List;
-import java.util.Map;
+import java.util.function.Consumer;
 
 public class FXAddSubscription extends FXBackgroundTask {
 
@@ -24,7 +22,6 @@ public class FXAddSubscription extends FXBackgroundTask {
         controller.btnSubscribe.setDisable(true);
         try {
             QueryWorkshopItem(controller.fieldSubscription.getText());
-
         }catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -32,11 +29,11 @@ public class FXAddSubscription extends FXBackgroundTask {
     }
 
     protected void QueryWorkshopItem(final String id) {
-        HttpRequest<Map> request = SteamApi.Functions.GetSingleItemAsync(new Subscription(id));
+        final ConsumerContainer onSuccessContainer = new ConsumerContainer();
         context.Post(() -> {
             WorkshopDialog dialog = new WorkshopDialog();
             dialog.setLabelTitle("Steam workshop item");
-            dialog.SetImage(new Image(WindowController.class.getResourceAsStream("kf2_logo.jpg")));
+            dialog.SetImage(IconLoader.LoadIcon(Icons.KF2_LOGO));
             dialog.SetId(id);
             dialog.SetLoading(true);
             dialog.SetOnConfirm(d -> {
@@ -48,26 +45,53 @@ public class FXAddSubscription extends FXBackgroundTask {
                     e.printStackTrace();
                 }
             });
-
-            request.SetOnSuccess(map -> {
-                try{
-                    Map resp = (Map) map.get("response");
-                    List pub = (List) resp.get("publishedfiledetails");
-                    Map o = (Map) pub.get(0);
-                    String url = o.get("preview_url").toString();
-                    FXUtils.CreateTransition(dialog.GetImage(), new Image(url)).play();
-                    String name = o.get("title").toString();
-                    dialog.SetName(name);
-                    dialog.SetLoading(false);
-                }catch (NullPointerException npe) {
-                    request.OnFail();
-                }
-            });
-            request.SetOnFail(dialog::FailedRequest);
-
+            onSuccessContainer.consumer = details -> {
+                FXUtils.CreateTransition(dialog.GetImage(), SteamCache.GetRemoteImage(details.previewUrl)).play();
+                dialog.SetName(details.title);
+                dialog.SetLoading(false);
+            };
             dialog.show();
         });
 
-        request.Request();
+        while(onSuccessContainer.consumer == null) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        SteamCache.GetSubscriptionDetails(Long.parseLong(id), onSuccessContainer.consumer);
+//        HttpRequest<Map> request = SteamApi.Functions.GetSingleItemAsync(new Subscription(id));
+//        context.Post(() -> {
+//            WorkshopDialog dialog = new WorkshopDialog();
+
+
+//
+//            request.SetOnSuccess(map -> {
+//                try{
+//                    Map resp = (Map) map.get("response");
+//                    List pub = (List) resp.get("publishedfiledetails");
+//                    Map o = (Map) pub.get(0);
+//                    String url = o.get("preview_url").toString();
+//                    FXUtils.CreateTransition(dialog.GetImage(), new Image(url)).play();
+//                    String name = o.get("title").toString();
+//                    dialog.SetName(name);
+//                    dialog.SetLoading(false);
+//                }catch (NullPointerException npe) {
+//                    request.OnFail();
+//                }
+//            });
+//            request.SetOnFail(dialog::FailedRequest);
+//
+//            dialog.show();
+//        });
+//
+//        request.Request();
     }
+
+    public static class ConsumerContainer {
+        Consumer<SubscriptionDetails> consumer = null;
+    }
+
 }

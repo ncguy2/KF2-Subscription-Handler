@@ -6,6 +6,7 @@ import handler.fx.uifx.FXWindow;
 import handler.http.HttpRequest;
 import handler.steam.CollectionDetails;
 import handler.steam.SteamApi;
+import handler.steam.SteamCache;
 import handler.steam.SubscriptionDetails;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class FXLoadCollection extends FXBackgroundTask {
         long l = Long.parseLong(controller.fieldCollection.getText());
         HttpRequest<CollectionDetails.CollectionDetailSet> request = SteamApi.Functions.GetCollectionDetails(l);
         context.Post(() -> {
-            CollectionDialog dialog = new CollectionDialog();
+            CollectionDialog dialog = new CollectionDialog(context);
             dialog.Clean();
             dialog.SetCollectionId(controller.fieldCollection.getText());
             dialog.SetLoaderState(true);
@@ -46,13 +47,19 @@ public class FXLoadCollection extends FXBackgroundTask {
                 long[] arr = new long[details.children.size()];
                 for (int i = 0; i < details.children.size(); i++)
                     arr[i] = details.children.get(i).FileId();
-                HttpRequest<SubscriptionDetails.SubscriptionDetailSet> req2 = SteamApi.Functions.GetSubscriptionSet(arr);
-                req2.SetOnSuccess(subSet -> {
-                    dialog.SetListCollectionItems(subSet);
+
+                SteamCache.GetSubscriptionSet(s -> {
+                    dialog.SetListCollectionItems(s);
                     dialog.SetLoaderState(false);
-                });
-                req2.SetOnFail(dialog::Failed);
-                req2.Request();
+                }, dialog::Failed, arr);
+
+//                HttpRequest<SubscriptionDetails.SubscriptionDetailSet> req2 = SteamApi.Functions.GetSubscriptionSet(arr);
+//                req2.SetOnSuccess(subSet -> {
+//                    dialog.SetListCollectionItems(subSet);
+//                    dialog.SetLoaderState(false);
+//                });
+//                req2.SetOnFail(dialog::Failed);
+//                req2.Request();
             });
             request.SetOnFail(dialog::Failed);
 

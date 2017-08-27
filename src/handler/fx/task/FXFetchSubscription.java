@@ -31,9 +31,9 @@ public class FXFetchSubscription extends FXBackgroundTask {
         controller.accSubscriptions.getPanes().clear();
         try {
             Collection<Subscription> values = KF2Files.getSubscriptions().values();
-            // Unpleasant, but needs to be final to be accessible within the .forEach call
-            final int[] unknowns = {controller.removedPanes.size()};
             context.Post(() -> {
+                // Unpleasant, but needs to be final to be mutable within the .forEach call
+                final int[] unknowns = {controller.removedPanes.size()};
                 values.forEach(value -> {
                     TitledPane pane = BuildPane(value);
                     if(pane.getUserData() != null && "Unknown".equalsIgnoreCase(pane.getUserData().toString()))
@@ -51,9 +51,9 @@ public class FXFetchSubscription extends FXBackgroundTask {
     }
 
     protected TitledPane BuildPane(Subscription value) {
-        DetailController content = new DetailController();
+        final DetailController content = new DetailController();
         content.SetSubscription(value);
-        TitledPane titledPane = new TitledPane(value.getName(), content);
+        final TitledPane titledPane = new TitledPane(value.getName(), content);
         content.SetTitlePane(titledPane);
         titledPane.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             content.Load();
@@ -71,6 +71,7 @@ public class FXFetchSubscription extends FXBackgroundTask {
             titledPane.setGraphic(IconLoader.GetIcon(Icons.DOWNLOAD_AVAILABLE));
             titledPane.setTooltip(new Tooltip("Needs update"));
         }
+
 
         return titledPane;
     }

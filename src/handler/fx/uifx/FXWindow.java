@@ -25,8 +25,12 @@ public class FXWindow extends Application {
     protected WindowController controller;
     protected Stage stage;
 
+    protected static FXWindow mainContext;
+
     @Override
     public void start(Stage primaryStage) throws IOException {
+
+        if(mainContext == null) mainContext = this;
 
         TooltipShowDelay(250);
 
@@ -67,6 +71,11 @@ public class FXWindow extends Application {
 
     public void Post(Runnable task) {
         Platform.runLater(task);
+    }
+
+    public static void PostStatic(Runnable task) {
+        if(mainContext == null) return;
+        mainContext.Post(task);
     }
 
 }

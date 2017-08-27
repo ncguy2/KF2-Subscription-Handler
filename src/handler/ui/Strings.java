@@ -36,6 +36,11 @@ public abstract class Strings {
         return "(" + fileName + ") File or privileges missing.";
     }
 
+    public static final String CACHE_ROOT_DIRECTORY = "/KF2SubscriptionHandler";
+
+    public static final String HTTP_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0";
+    public static final String CACHE_IMAGE_FORMAT = "png";
+
     public static class Mutable {
 
         public static String WORKING_DIRECTORY = CURRENT_DIRECTORY;

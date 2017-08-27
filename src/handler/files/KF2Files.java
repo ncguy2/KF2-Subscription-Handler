@@ -130,6 +130,14 @@ public abstract class KF2Files {
         file.close();
     }
 
+    public static void AddSubscription(int input) {
+        try {
+            addSubscription(input);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static String formatCycleString(List<?> maps) {
         StringBuilder builder = new StringBuilder();
         builder.append("GameMapCycles=(Maps=(");

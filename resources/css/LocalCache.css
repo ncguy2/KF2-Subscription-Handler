@@ -1,0 +1,11 @@
+.tab *.tab-label {
+	-fx-rotate: 90;
+	-fx-focus-color: transparent;
+	-fx-faint-focus-color: transparent;
+}
+
+.tab {
+	-fx-padding: 3em 0.5em 3em 0.5em;
+	-fx-focus-color: transparent;
+	-fx-faint-focus-color: transparent;
+}

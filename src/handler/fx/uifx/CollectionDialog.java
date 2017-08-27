@@ -1,7 +1,9 @@
 package handler.fx.uifx;
 
+import handler.files.KF2Files;
 import handler.fx.IconLoader;
 import handler.fx.Icons;
+import handler.fx.task.FXFetchSubscription;
 import handler.steam.SubscriptionDetails;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,8 +27,10 @@ import java.util.function.Consumer;
 public class CollectionDialog extends Dialog<Boolean> {
 
     private Consumer<CollectionDialog> onConfirm;
+    private FXWindow context;
 
-    public CollectionDialog() {
+    public CollectionDialog(FXWindow context) {
+        this.context = context;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("CollectionConfirm.fxml"));
         loader.setController(this);
 
@@ -41,6 +45,8 @@ public class CollectionDialog extends Dialog<Boolean> {
 
         MultipleSelectionModel selectionModel = listCollectionItems.getSelectionModel();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
+
+        resultProperty().setValue(false);
     }
 
     public void SetImage(Image image) {
@@ -134,10 +140,18 @@ public class CollectionDialog extends Dialog<Boolean> {
     @FXML
     public void ConfirmCollection(ActionEvent event) {
         // TODO confirm collection
+        List<SubscriptionDetails> confirmedSubs = GetConfirmedSubs();
+
+        confirmedSubs.stream()
+                .map(sub -> Integer.parseInt(sub.publishedfileid))
+                .forEach(KF2Files::AddSubscription);
+
+        new FXFetchSubscription(context).start();
+        CloseDialog(true);
     }
     @FXML
     public void CancelCollection(ActionEvent event) {
-        // TODO confirm collection
+        CloseDialog(false);
     }
 
     @FXML

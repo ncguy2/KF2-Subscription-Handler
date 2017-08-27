@@ -1,6 +1,7 @@
 package handler;
 
 import handler.fx.uifx.FXWindow;
+import handler.steam.SteamCache;
 import handler.ui.Window;
 import javafx.application.Application;
 
@@ -15,6 +16,8 @@ public class Main {
             if(args[i].equalsIgnoreCase("-legacy"))
                 useLegacy = true;
         }
+
+        SteamCache.PopulateIndex();
 
 //        SwingUtilities.invokeLater(() -> new Window().show());
 

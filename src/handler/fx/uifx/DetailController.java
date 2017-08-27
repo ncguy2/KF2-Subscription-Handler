@@ -6,20 +6,18 @@ package handler.fx.uifx;
 //
 
 import handler.domain.Subscription;
-import handler.http.HttpRequest;
-import handler.steam.SteamApi;
-import javafx.application.Platform;
+import handler.fx.IconLoader;
+import handler.fx.Icons;
+import handler.steam.SteamCache;
+import javafx.animation.Animation;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 public class DetailController extends GridPane {
 
@@ -55,7 +53,7 @@ public class DetailController extends GridPane {
 
     public void SetSubscription(Subscription sub) {
         this.sub = sub;
-        imageThumb.setImage(new Image(getClass().getResourceAsStream("kf2_logo.jpg")));
+        imageThumb.setImage(IconLoader.LoadIcon(Icons.KF2_LOGO));
         fieldSubId.setText(sub.getId());
         fieldSubName.setText(sub.getName());
     }
@@ -64,27 +62,14 @@ public class DetailController extends GridPane {
         if(loaded) return;
         if(sub == null) return;
         loaded = true;
-        HttpRequest<Map> request = SteamApi.Functions.GetSingleItemAsync(sub);
-        request.SetOnSuccess(map -> {
-            try{
-                Map resp = (Map) map.get("response");
-                List pub = (List) resp.get("publishedfiledetails");
-                Map o = (Map) pub.get(0);
-                String url = o.get("preview_url").toString();
-                FXUtils.CreateTransition(imageThumb, new Image(url)).play();
-                String name = o.get("title").toString();
-                fieldSubName.setText(name);
-//                Platform.runLater(() -> titlePane.setGraphic(IconLoader.GetIcon(Icons.DOWNLOAD_FINISHED)));
-            }catch (NullPointerException npe) {
-                request.OnFail();
+        SteamCache.GetSubscriptionDetails(Long.parseLong(sub.getId()), details -> {
+            if(titlePane != null) {
+                FXUtils.TextTransition(titlePane, details.title, 2000).ifPresent(Animation::play);
+//                titlePane.setText(details.title);
             }
+            FXUtils.CreateTransition(imageThumb, SteamCache.GetRemoteImage(details.previewUrl)).play();
+            fieldSubName.setText(details.title);
         });
-        request.SetOnFail(() -> {
-            Platform.runLater(() -> titlePane.setGraphic(null));
-        });
-        System.out.println(request.GetParameterString());
-//        titlePane.setGraphic(IconLoader.GetIcon(Icons.DOWNLOADING));
-        request.Request();
     }
 
     @FXML

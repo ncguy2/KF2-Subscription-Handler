@@ -5,6 +5,8 @@ package handler.http;
 // Created at: 25/08/2017
 //
 
+import handler.ui.Strings;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -141,6 +143,7 @@ public class HttpRequest<T> {
 
     protected void DefaultHeaders() {
         SetHeader("Content-Language", "en-GB");
+        SetHeader("User-Agent", Strings.HTTP_USER_AGENT);
     }
 
     protected String EncodeParameters() {
