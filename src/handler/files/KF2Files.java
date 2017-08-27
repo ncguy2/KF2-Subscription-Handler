@@ -20,6 +20,8 @@ public abstract class KF2Files {
     private static final String KFEngine = "\\KFGame\\Config\\PCServer-KFEngine.ini";
     private static final String KFGame = "\\KFGame\\Config\\PCServer-KFGame.ini";
     private static final String Cache = "\\KFGame\\Cache";
+
+    private static final String DefaultGame = "\\KFGame\\Config\\DefaultGame.ini";
     
     private static final Map<String, Subscription> SUBSCRIPTIONS = new HashMap<>();
     
@@ -139,33 +141,33 @@ public abstract class KF2Files {
         return builder.toString();
     }
 
-    private static List<String> nativeMaps = new ArrayList<>();
-    static {
-        nativeMaps.add("KF-BurningParis");
-        nativeMaps.add("KF-Bioticslab");
-        nativeMaps.add("KF-Outpost");
-        nativeMaps.add("KF-VolterManor");
-        nativeMaps.add("KF-Catacombs");
-        nativeMaps.add("KF-EvacuationPoint");
-        nativeMaps.add("KF-Farmhouse");
-        nativeMaps.add("KF-BlackForest");
-        nativeMaps.add("KF-Prison");
-        nativeMaps.add("KF-ContainmentStation");
-        nativeMaps.add("KF-HostileGrounds");
-        nativeMaps.add("KF-InfernalRealm");
-        nativeMaps.add("KF-ZedLanding");
-        nativeMaps.add("KF-Nuked");
-        nativeMaps.add("KF-TheDescent");
-        nativeMaps.add("KF-TragicKingdom");
-        nativeMaps.add("KF-BioticsLab");
-        nativeMaps.add("KF-Default");
+    private static List<String> nativeMaps = null;
+
+    private static void LoadNativeMaps() throws Exception {
+        String mapString = readMapCycle(new File(Strings.Mutable.WORKING_DIRECTORY + DefaultGame));
+        mapString = mapString.split("\\(")[2].replaceAll("\"", "");
+        List<String> maps = Arrays.asList(mapString.replaceAll("\\)", "").split(","));
+        nativeMaps.addAll(maps);
+        nativeMaps.clear();
+    }
+
+    public static List<String> GetNativeMaps() {
+        if(nativeMaps == null) {
+            nativeMaps = new ArrayList<>();
+            try {
+                LoadNativeMaps();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return nativeMaps;
     }
 
     public static boolean IsNativeMap(String name) {
-        return nativeMaps.contains(name);
+        return GetNativeMaps().contains(name);
     }
     public static int NativeIndex(String name) {
-        return nativeMaps.indexOf(name);
+        return GetNativeMaps().indexOf(name);
     }
 
 }
