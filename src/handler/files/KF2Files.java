@@ -147,8 +147,8 @@ public abstract class KF2Files {
         String mapString = readMapCycle(new File(Strings.Mutable.WORKING_DIRECTORY + DefaultGame));
         mapString = mapString.split("\\(")[2].replaceAll("\"", "");
         List<String> maps = Arrays.asList(mapString.replaceAll("\\)", "").split(","));
-        nativeMaps.addAll(maps);
         nativeMaps.clear();
+        nativeMaps.addAll(maps);
     }
 
     public static List<String> GetNativeMaps() {
