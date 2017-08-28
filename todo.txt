@@ -3,11 +3,7 @@
     Removing a map manually and then refreshing won't update the Unknown Map placeholder
 
     next version:
-    ability to bring back vanilla maps
-    ability to choose server location
     deleting maps
-    drag and drop sorting
     renaming files
     possibility of adding other settings
-        -> Enable Steam Workshop
         -> Increasing maximum map pool size

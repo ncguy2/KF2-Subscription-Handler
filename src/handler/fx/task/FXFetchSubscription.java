@@ -28,7 +28,7 @@ public class FXFetchSubscription extends FXBackgroundTask {
     public void run() {
         controller.btnSubscribe.setDisable(true);
         controller.btnRefreshSubscriptions.setDisable(true);
-        controller.accSubscriptions.getPanes().clear();
+        context.Post(() -> controller.accSubscriptions.getPanes().clear());
         try {
 
             int index = 0;

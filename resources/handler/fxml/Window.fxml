@@ -14,6 +14,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.effect.InnerShadow?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -21,7 +22,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Text?>
 
-<GridPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="handler.fx.uifx.WindowController">
+<GridPane fx:id="rootPane" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="handler.fx.uifx.WindowController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
       <ColumnConstraints />
@@ -38,8 +39,17 @@
                 <Menu mnemonicParsing="false" text="File">
                   <items>
                     <MenuItem fx:id="menuItemResetSplit" mnemonicParsing="false" onAction="#menuItemResetSplitAction" text="Reset splitpane" />
-                        <MenuItem fx:id="menuItemSetDirectory" mnemonicParsing="false" onAction="#SetDirectory" text="Set working directory" />
+                    <MenuItem fx:id="menuItemSetDirectory" mnemonicParsing="false" onAction="#SetDirectory" text="Set working directory" />
                   </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="View">
+                     <items>
+                        <Menu fx:id="menuThemes" mnemonicParsing="false" text="Theme">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Action 1" />
+                          </items>
+                        </Menu>
+                     </items>
                 </Menu>
               </menus>
             </MenuBar>
@@ -80,11 +90,18 @@
                                                       <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
-                                                      <TextField fx:id="fieldSubFilter" promptText="Filter" />
+                                                      <AnchorPane>
+                                                         <children>
+                                                            <TextField fx:id="fieldSubFilter" promptText="Filter" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
+                                                         </children>
+                                                      </AnchorPane>
                                                       <ScrollPane fitToWidth="true" GridPane.rowIndex="2">
                                                          <content>
                                                             <Accordion fx:id="accSubscriptions" />
                                                          </content>
+                                                         <effect>
+                                                            <InnerShadow height="30.65" offsetY="1.0" radius="7.1625" width="0.0" />
+                                                         </effect>
                                                       </ScrollPane>
                                                    </children>
                                                 </GridPane>
@@ -163,7 +180,7 @@
                                           </AnchorPane>
                                           <AnchorPane>
                                              <children>
-                                                <TextField fx:id="fieldSubscription" promptText="Steam workshop ID here" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
+                                                <TextField fx:id="fieldSubscription" onAction="#AddSubscription" promptText="Steam workshop ID here" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
                                              </children>
                                           </AnchorPane>
                                           <AnchorPane GridPane.columnIndex="3">
@@ -173,12 +190,12 @@
                                           </AnchorPane>
                                           <AnchorPane GridPane.columnIndex="2">
                                              <children>
-                                                <Button fx:id="btnSaveCycle" layoutX="4.0" layoutY="14.0" mnemonicParsing="false" onAction="#SaveCycle" text="Save map cycle" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
+                                                <Button fx:id="btnSaveCycle" layoutX="4.0" layoutY="14.0" mnemonicParsing="false" onAction="#SaveCycle" styleClass="primary" text="Save map cycle" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
                                              </children>
                                           </AnchorPane>
                                           <AnchorPane GridPane.columnIndex="1">
                                              <children>
-                                                <TextField fx:id="fieldCollection" promptText="Steam workshop collection ID here" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
+                                                <TextField fx:id="fieldCollection" onAction="#LoadCollection" promptText="Steam workshop collection ID here" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0" />
                                              </children>
                                           </AnchorPane>
                                           <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1">

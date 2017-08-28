@@ -3,6 +3,7 @@ package handler.fx.uifx;
 import handler.files.KF2Files;
 import handler.fx.IconLoader;
 import handler.fx.Icons;
+import handler.fx.ThemeManager;
 import handler.fx.task.FXFetchSubscription;
 import handler.steam.SubscriptionDetails;
 import javafx.event.ActionEvent;
@@ -31,7 +32,7 @@ public class CollectionDialog extends Dialog<Boolean> {
 
     public CollectionDialog(FXWindow context) {
         this.context = context;
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("CollectionConfirm.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/handler/fxml/CollectionConfirm.fxml"));
         loader.setController(this);
 
         try{
@@ -40,6 +41,7 @@ public class CollectionDialog extends Dialog<Boolean> {
             ioe.printStackTrace();
         }
 
+
         getDialogPane().setContent(rootPane);
         setOnCloseRequest(e -> CloseDialog(false));
 
@@ -47,6 +49,7 @@ public class CollectionDialog extends Dialog<Boolean> {
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
 
         resultProperty().setValue(false);
+        ThemeManager.ApplyTheme(getDialogPane().getScene());
     }
 
     public void SetImage(Image image) {

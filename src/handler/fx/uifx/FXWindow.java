@@ -5,6 +5,7 @@ package handler.fx.uifx;
 // Created at: 25/08/2017
 //
 
+import handler.fx.ThemeManager;
 import handler.ui.Strings;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -24,6 +25,7 @@ public class FXWindow extends Application {
 
     protected WindowController controller;
     protected Stage stage;
+    protected Scene scene;
 
     protected static FXWindow mainContext;
 
@@ -37,12 +39,14 @@ public class FXWindow extends Application {
         primaryStage.setTitle(Strings.WINDOW_TITLE);
         primaryStage.setResizable(true);
         FXMLLoader loader = new FXMLLoader();
-        Parent root =  loader.load(getClass().getResource("Window.fxml").openStream());
+        Parent root =  loader.load(getClass().getResource("/handler/fxml/Window.fxml").openStream());
         controller = loader.getController();
         controller.context = this;
         stage = primaryStage;
 
-        Scene scene = new Scene(root);
+        scene = new Scene(root);
+        ThemeManager.ApplyTheme(scene, ThemeManager.Themes.BOOTSTRAP_3);
+
         primaryStage.setScene(scene);
         primaryStage.sizeToScene();
         primaryStage.show();

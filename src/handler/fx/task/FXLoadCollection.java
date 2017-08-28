@@ -19,12 +19,14 @@ public class FXLoadCollection extends FXBackgroundTask {
 
     @Override
     public void run() {
-        long l = Long.parseLong(controller.fieldCollection.getText());
+        final String text = controller.fieldCollection.getText();
+        controller.fieldCollection.setText("");
+        long l = Long.parseLong(text);
         HttpRequest<CollectionDetails.CollectionDetailSet> request = SteamApi.Functions.GetCollectionDetails(l);
         context.Post(() -> {
             CollectionDialog dialog = new CollectionDialog(context);
             dialog.Clean();
-            dialog.SetCollectionId(controller.fieldCollection.getText());
+            dialog.SetCollectionId(text);
             dialog.SetLoaderState(true);
             dialog.SetOnConfirm(d -> {
                 try{
@@ -43,15 +45,20 @@ public class FXLoadCollection extends FXBackgroundTask {
             });
 
             request.SetOnSuccess(set -> {
-                CollectionDetails details = set.details.get(0);
-                long[] arr = new long[details.children.size()];
-                for (int i = 0; i < details.children.size(); i++)
-                    arr[i] = details.children.get(i).FileId();
+                // TODO handle error properly
+                try{
+                    CollectionDetails details = set.details.get(0);
+                    long[] arr = new long[details.children.size()];
+                    for (int i = 0; i < details.children.size(); i++)
+                        arr[i] = details.children.get(i).FileId();
 
-                SteamCache.GetSubscriptionSet(s -> {
-                    dialog.SetListCollectionItems(s);
-                    dialog.SetLoaderState(false);
-                }, dialog::Failed, arr);
+                    SteamCache.GetSubscriptionSet(s -> {
+                        dialog.SetListCollectionItems(s);
+                        dialog.SetLoaderState(false);
+                    }, dialog::Failed, arr);
+                }catch (NullPointerException npe) {
+                    request.OnFail();
+                }
 
 //                HttpRequest<SubscriptionDetails.SubscriptionDetailSet> req2 = SteamApi.Functions.GetSubscriptionSet(arr);
 //                req2.SetOnSuccess(subSet -> {

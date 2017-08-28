@@ -5,6 +5,7 @@ import javafx.animation.FadeTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Transition;
 import javafx.scene.control.Labeled;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
@@ -49,6 +50,16 @@ public class FXUtils {
                 }
                 final int n = Math.round(length * (float)Math.abs(ndc));
                 field.setText(str.substring(0, Math.min(str.length(), n)));
+            }
+        });
+    }
+
+    public static void AddNumericTextFilter(TextInputControl control) {
+        control.textProperty().addListener((observable, oldValue, newValue) -> {
+            // if new value is not all digits
+            if(!newValue.matches("\\d*")) {
+                // Remove all non-digits
+                control.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
     }

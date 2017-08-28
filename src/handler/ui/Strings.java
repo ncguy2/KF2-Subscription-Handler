@@ -1,5 +1,7 @@
 package handler.ui;
 
+import java.io.File;
+
 public abstract class Strings {
     
     public static final String NULL = "";
@@ -36,10 +38,12 @@ public abstract class Strings {
         return "(" + fileName + ") File or privileges missing.";
     }
 
-    public static final String CACHE_ROOT_DIRECTORY = "/KF2SubscriptionHandler";
+    public static final String CACHE_ROOT_DIRECTORY = File.separator + "KF2SubscriptionHandler" + File.separator;
 
     public static final String HTTP_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0";
     public static final String CACHE_IMAGE_FORMAT = "png";
+
+    public static final long KF2AppId = 232090L;
 
     public static class Mutable {
 

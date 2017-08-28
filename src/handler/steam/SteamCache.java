@@ -1,9 +1,12 @@
 package handler.steam;
 
+import com.sun.javafx.collections.ObservableMapWrapper;
 import handler.fx.uifx.FXWindow;
 import handler.http.HttpRequest;
 import handler.ui.Strings;
 import handler.utils.JsonSerializer;
+import javafx.collections.MapChangeListener;
+import javafx.collections.ObservableMap;
 import javafx.scene.image.Image;
 
 import javax.imageio.ImageIO;
@@ -84,6 +87,20 @@ public class SteamCache {
 
     // Image
 
+    public static void DeleteImage(final String urlPath) {
+        String s = Index.remoteImageCache.remove(urlPath);
+        if(s == null) {
+            System.out.printf("Attempting to delete image from cache, but cannot find image [%s]\n", urlPath);
+            return;
+        }
+        Path path = new File(s).toPath();
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void AddRemoteImage(String urlPath) throws IOException {
         AddRemoteImage_Fallback(urlPath);
     }
@@ -99,7 +116,7 @@ public class SteamCache {
     }
 
     private static void SaveByteArray(String urlPath, byte[] bytes) throws IOException {
-        final String path = urlPath.replaceAll("/", ".").replaceAll(":", "_") + "." + Strings.CACHE_IMAGE_FORMAT;
+        final String path = FilterImagePath(urlPath);
         System.out.println("Path: "+path);
         File file = new File(ImagePath() + path);
         System.out.println("File path: " + file.getAbsolutePath());
@@ -115,7 +132,7 @@ public class SteamCache {
     }
 
     public static Image GetRemoteImage(String url) {
-        final String path = url.replaceAll("/", ".").replaceAll(":", "_") + "." + Strings.CACHE_IMAGE_FORMAT;
+        final String path = FilterImagePath(url);
         if(Index.remoteImageCache.containsKey(path))
             url = "file:///"+Index.remoteImageCache.get(path);
         else {
@@ -128,7 +145,25 @@ public class SteamCache {
         return new Image(url);
     }
 
+    private static String FilterImagePath(String url) {
+        return url.replaceAll("/", ".").replaceAll(":", "_") + "." + Strings.CACHE_IMAGE_FORMAT;
+    }
+
     // Workshop Item
+
+    public static void DeleteItem(long itemId) {
+        String s = Index.workshopItemCache.remove(itemId);
+        if(s == null) {
+            System.out.printf("Attempting to delete item from cache, but cannot find item [%s]\n", String.valueOf(itemId));
+            return;
+        }
+        Path path = new File(s).toPath();
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void GetSubscriptionDetails(long itemId, Consumer<SubscriptionDetails> func) {
         Thread t = new Thread(() -> {
@@ -247,14 +282,28 @@ public class SteamCache {
         return GetDetailSetFromDisk(itemIds).data;
     }
 
-    public static HashMap<String, String> GetImageCache() {
+    public static ObservableMap<String, String> GetImageCache() {
         return Index.remoteImageCache;
+    }
+
+    public static void AddImageListener(MapChangeListener<String, String> listener) {
+        Index.remoteImageCache.addListener(listener);
+    }
+    public static void RemoveImageListener(MapChangeListener<String, String> listener) {
+        Index.remoteImageCache.removeListener(listener);
+    }
+
+    public static void AddItemListener(MapChangeListener<Long, String> listener) {
+        Index.workshopItemCache.addListener(listener);
+    }
+    public static void RemoveItemListener(MapChangeListener<Long, String> listener) {
+        Index.workshopItemCache.removeListener(listener);
     }
 
     public static class Index {
 
-        public static HashMap<String, String> remoteImageCache = new HashMap<>();
-        public static HashMap<Long, String> workshopItemCache = new HashMap<>();
+        public static ObservableMap<String, String> remoteImageCache = new ObservableMapWrapper<>(new HashMap<>());
+        public static ObservableMap<Long, String> workshopItemCache = new ObservableMapWrapper<>(new HashMap<>());
 
     }
 

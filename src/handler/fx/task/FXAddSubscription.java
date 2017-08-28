@@ -8,6 +8,7 @@ import handler.fx.uifx.FXWindow;
 import handler.fx.uifx.WorkshopDialog;
 import handler.steam.SteamCache;
 import handler.steam.SubscriptionDetails;
+import handler.ui.Strings;
 
 import java.util.function.Consumer;
 
@@ -22,6 +23,7 @@ public class FXAddSubscription extends FXBackgroundTask {
         controller.btnSubscribe.setDisable(true);
         try {
             QueryWorkshopItem(controller.fieldSubscription.getText());
+            controller.fieldSubscription.setText("");
         }catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -49,6 +51,11 @@ public class FXAddSubscription extends FXBackgroundTask {
                 FXUtils.CreateTransition(dialog.GetImage(), SteamCache.GetRemoteImage(details.previewUrl)).play();
                 dialog.SetName(details.title);
                 dialog.SetLoading(false);
+
+                long consumerAppId = details.consumerAppId;
+                if(consumerAppId != Strings.KF2AppId)
+                    dialog.SetWarning("Item not for KF2", true);
+
             };
             dialog.show();
         });

@@ -6,6 +6,7 @@ package handler.fx.uifx;
 //
 
 import handler.domain.Subscription;
+import handler.fx.ThemeManager;
 import handler.fx.task.*;
 import handler.fx.uifx.components.CycleCell;
 import handler.fx.uifx.components.Toast;
@@ -24,9 +25,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.util.Duration;
@@ -47,6 +50,8 @@ public class WindowController implements Initializable {
     public static final String MenuSeparator = "------------";
 
     protected ContextMenu filterContextMenu;
+    protected ContextMenu cacheItemContextMenu;
+    protected ContextMenu cacheImageContextMenu;
 
     public WindowController() {
         subscriptions = new ArrayList<>();
@@ -115,10 +120,108 @@ public class WindowController implements Initializable {
 
         fieldSubFilter.setContextMenu(filterContextMenu);
 
-//        fieldSubFilter.setOnContextMenuRequested(event -> {
-//            filterContextMenu.show(fieldSubFilter, event.getScreenX(), event.getScreenY());
-//            event.consume();
-//        });
+        // TODO add cache deletion confirmation dialog (low priority)
+        cacheItemContextMenu = new ContextMenu();
+        MenuItem itemDelete = new MenuItem("Delete");
+        itemDelete.setOnAction(e -> {
+            Object selectedItem = cachelistItems.getSelectionModel().getSelectedItem();
+            if(selectedItem instanceof SubscriptionDetails) {
+                SubscriptionDetails sub = (SubscriptionDetails) selectedItem;
+                SteamCache.DeleteItem(Long.parseLong(sub.publishedfileid));
+                cachelistItems.getSelectionModel().clearSelection();
+                cachelistItems.getItems().remove(sub);
+            }
+        });
+        cacheItemContextMenu.getItems().add(itemDelete);
+
+        cacheImageContextMenu = new ContextMenu();
+        MenuItem imageDelete = new MenuItem("Delete");
+        imageDelete.setOnAction(e -> {
+            Object selectedItem = cachelistImages.getSelectionModel().getSelectedItem();
+            if(selectedItem instanceof ImageString) {
+                ImageString is = (ImageString) selectedItem;
+                SteamCache.DeleteImage(is.string);
+                cachelistImages.getSelectionModel().clearSelection();
+                cachelistImages.getItems().remove(is);
+            }
+        });
+        cacheImageContextMenu.getItems().add(imageDelete);
+
+        cachelistItems.setContextMenu(cacheItemContextMenu);
+        cachelistImages.setContextMenu(cacheImageContextMenu);
+
+        InvalidateThemeList();
+        InitializeCacheListeners();
+        InitializeNumericFilters();
+
+        ColorAdjust monochrome = new ColorAdjust();
+        monochrome.setSaturation(-1);
+    }
+
+    public void InvalidateThemeList() {
+        menuThemes.getItems().clear();
+        for (ThemeManager.Themes theme : ThemeManager.Themes.values()) {
+            MenuItem menuItem = new MenuItem(theme.Title());
+            menuItem.setOnAction(e -> ThemeManager.ApplyTheme(context.scene, theme));
+            menuThemes.getItems().add(menuItem);
+        }
+
+        Optional<Map<String, String>> externalThemes = ThemeManager.FindExternalThemes();
+
+        if(!externalThemes.isPresent()) return;
+        if(externalThemes.get().isEmpty()) return;
+
+        menuThemes.getItems().add(new SeparatorMenuItem());
+
+        externalThemes.get().forEach((k, v) -> {
+            MenuItem menuItem = new MenuItem(k);
+            menuItem.setOnAction(e -> ThemeManager.ApplyTheme(context.scene, v));
+            menuThemes.getItems().add(menuItem);
+        });
+    }
+
+    public void InitializeCacheListeners() {
+        // Item cache listener
+        SteamCache.AddItemListener(change -> {
+            long changedId = change.getKey();
+            if(change.wasAdded()) {
+                SteamCache.GetSubscriptionDetails(changedId, cachelistItems.getItems()::add);
+            }else if(change.wasRemoved()) {
+                for (Object o : cachelistItems.getItems()) {
+                    if(o instanceof SubscriptionDetails) {
+                        SubscriptionDetails o1 = (SubscriptionDetails) o;
+                        if(Long.parseLong(o1.publishedfileid) == changedId) {
+                            cachelistItems.getItems().remove(o1);
+                            return;
+                        }
+                    }
+                }
+            }else{
+                // TODO check if this is required, and implement if necessary
+                System.out.println("Unsupported item cache change detected");
+            }
+        });
+
+        // Image cache listener
+        SteamCache.AddImageListener(change -> {
+            String changedId = change.getKey();
+            if(change.wasAdded()) {
+                cachelistImages.getItems().add(new ImageString(changedId, change.getValueAdded()));
+            }else if(change.wasRemoved()) {
+                ImageString imageString = new ImageString(changedId, change.getValueRemoved());
+                cachelistImages.getItems().remove(imageString);
+                if(imageString.equals(cacheImgActiveImage))
+                    cacheimgImage.setEffect(monochrome);
+            }else{
+                // TODO check if this is required, and implement if necessary
+                System.out.println("Unsupported image cache change detected");
+            }
+        });
+    }
+
+    public void InitializeNumericFilters() {
+        FXUtils.AddNumericTextFilter(fieldSubscription);
+        FXUtils.AddNumericTextFilter(fieldCollection);
     }
 
     public void AddSubToCycle(Subscription sub) {
@@ -231,13 +334,9 @@ public class WindowController implements Initializable {
             Strings.Mutable.WORKING_DIRECTORY = directory.getAbsolutePath();
             SteamCache.PopulateIndex();
             DisplayNotification("New working directory", Strings.Mutable.WORKING_DIRECTORY, Color.AQUAMARINE);
-            cachelistItems.getItems().setAll(SteamCache.GetItemCacheAsSet().details);
-
-            HashMap<String, String> imageCache = SteamCache.GetImageCache();
-            cachelistImages.getItems().setAll(imageCache.entrySet()
-                    .stream()
-                    .map(entry -> new ImageString(entry.getKey(), entry.getValue()))
-                    .collect(Collectors.toList()));
+            InvalidateThemeList();
+            RefreshSubscriptions(null);
+            RefreshCycle(null);
         }else{
             DisplayNotification("No working directory, reverting...", Strings.Mutable.WORKING_DIRECTORY, Color.INDIANRED);
         }
@@ -323,8 +422,13 @@ public class WindowController implements Initializable {
             ImageString s = (ImageString) selected;
             Image image = new Image(s.filePath);
             cacheimgImage.setImage(image);
+            cacheimgImage.setEffect(null);
+            cacheImgActiveImage = s;
         }
     }
+
+    @FXML
+    public GridPane rootPane;
 
     @FXML
     public ListView cachelistItems;
@@ -335,6 +439,8 @@ public class WindowController implements Initializable {
     public ListView cachelistImages;
     @FXML
     public ImageView cacheimgImage;
+
+    private ImageString cacheImgActiveImage = null;
 
     @FXML
     public AnchorPane cacheimgAnchorParent;
@@ -357,6 +463,24 @@ public class WindowController implements Initializable {
         }
 
         @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            ImageString that = (ImageString) o;
+
+            if (string != null ? !string.equals(that.string) : that.string != null) return false;
+            return display != null ? display.equals(that.display) : that.display == null;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = string != null ? string.hashCode() : 0;
+            result = 31 * result + (display != null ? display.hashCode() : 0);
+            return result;
+        }
+
+        @Override
         public String toString() {
             return display;
         }
@@ -368,5 +492,10 @@ public class WindowController implements Initializable {
     public ToggleButton tglApiKeyVisibility;
     @FXML
     public TextField fieldApiKeyPlain;
+
+    @FXML
+    public Menu menuThemes;
+
+    private ColorAdjust monochrome;
 
 }

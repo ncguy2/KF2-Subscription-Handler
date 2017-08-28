@@ -1,8 +1,11 @@
 package handler.fx.uifx;
 
+import handler.fx.ThemeManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
@@ -17,7 +20,7 @@ import java.util.function.Consumer;
 public class WorkshopDialog extends Dialog<Boolean> {
 
     public WorkshopDialog() {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("WorkshopConfirm.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/handler/fxml/WorkshopConfirm.fxml"));
         loader.setController(this);
 
         try{
@@ -28,6 +31,9 @@ public class WorkshopDialog extends Dialog<Boolean> {
 
         getDialogPane().setContent(rootPane);
         setOnCloseRequest(e -> CloseDialog());
+
+        Scene scene = getDialogPane().getScene();
+        ThemeManager.ApplyTheme(scene);
     }
 
     public void setLabelTitle(String title) {
@@ -44,6 +50,11 @@ public class WorkshopDialog extends Dialog<Boolean> {
     }
     public void SetImage(Image image) {
         imgThumb.setImage(image);
+    }
+    public void SetWarning(String text) { textWarning.setText(text); }
+    public void SetWarning(String text, boolean disableConfirm) {
+        SetWarning(text);
+        btnConfirm.setDisable(disableConfirm);
     }
 
     public void FailedRequest() {
@@ -93,6 +104,10 @@ public class WorkshopDialog extends Dialog<Boolean> {
     private ImageView imgThumb;
     @FXML
     private GridPane rootPane;
+    @FXML
+    private Text textWarning;
+    @FXML
+    private Button btnConfirm;
 
     protected Consumer<WorkshopDialog> onConfirm;
 }

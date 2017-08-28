@@ -8,6 +8,7 @@ package handler.fx.uifx;
 import handler.domain.Subscription;
 import handler.fx.IconLoader;
 import handler.fx.Icons;
+import handler.fx.ThemeManager;
 import handler.steam.SteamCache;
 import javafx.animation.Animation;
 import javafx.fxml.FXML;
@@ -27,7 +28,7 @@ public class DetailController extends GridPane {
     TitledPane titlePane = null;
 
     public DetailController() {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Detail.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/handler/fxml/Detail.fxml"));
         loader.setRoot(this);
         loader.setController(this);
 
@@ -37,6 +38,7 @@ public class DetailController extends GridPane {
             throw new RuntimeException(e);
         }
 
+        ThemeManager.ApplyTheme(getScene());
     }
 
     public Subscription GetSubscription() {
