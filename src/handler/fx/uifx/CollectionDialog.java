@@ -142,7 +142,6 @@ public class CollectionDialog extends Dialog<Boolean> {
 
     @FXML
     public void ConfirmCollection(ActionEvent event) {
-        // TODO confirm collection
         List<SubscriptionDetails> confirmedSubs = GetConfirmedSubs();
 
         confirmedSubs.stream()

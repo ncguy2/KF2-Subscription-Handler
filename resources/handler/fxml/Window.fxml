@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
@@ -220,81 +221,97 @@
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" stylesheets="@/css/LocalCache.css">
                            <children>
-                              <TabPane layoutX="92.0" layoutY="81.0" prefHeight="200.0" prefWidth="200.0" rotateGraphic="true" side="LEFT" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                <tabs>
-                                  <Tab closable="false" text="Items">
-                                    <content>
-                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="768.0" prefWidth="904.0">
-                                             <children>
-                                                <SplitPane dividerPositions="0.29797979797979796" layoutX="285.0" layoutY="255.0" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                  <items>
-                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                                                         <children>
-                                                            <ScrollPane fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                               <content>
-                                                                  <ListView fx:id="cachelistItems" prefHeight="200.0" prefWidth="200.0" />
-                                                               </content>
-                                                            </ScrollPane>
-                                                         </children>
-                                                      </AnchorPane>
-                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                                                         <children>
-                                                            <GridPane layoutX="104.0" layoutY="121.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                              <columnConstraints>
-                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                              </columnConstraints>
-                                                              <rowConstraints>
-                                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                              </rowConstraints>
+                              <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <TabPane fx:id="cacheTabPane" prefHeight="200.0" prefWidth="200.0" rotateGraphic="true" side="LEFT" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1">
+                                      <tabs>
+                                        <Tab closable="false" text="Items">
+                                          <content>
+                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="768.0" prefWidth="904.0">
+                                                   <children>
+                                                      <SplitPane dividerPositions="0.29797979797979796" layoutX="285.0" layoutY="255.0" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                        <items>
+                                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                                <children>
-                                                                  <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
-                                                                    <content>
-                                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
-                                                                           <children>
-                                                                              <TextArea fx:id="cachetxtItemJson" editable="false" layoutX="164.0" layoutY="168.0" prefHeight="200.0" prefWidth="200.0" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                                           </children>
-                                                                        </AnchorPane>
-                                                                    </content>
+                                                                  <ScrollPane fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                     <content>
+                                                                        <ListView fx:id="cachelistItems" prefHeight="200.0" prefWidth="200.0" />
+                                                                     </content>
                                                                   </ScrollPane>
                                                                </children>
-                                                            </GridPane>
-                                                         </children>
-                                                      </AnchorPane>
-                                                  </items>
-                                                </SplitPane>
-                                             </children>
-                                          </AnchorPane>
-                                    </content>
-                                  </Tab>
-                                  <Tab closable="false" text="Images">
-                                    <content>
-                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                             <children>
-                                                <SplitPane dividerPositions="0.29797979797979796" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                   <items>
-                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                                                         <children>
-                                                            <ScrollPane fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                               <content>
-                                                                  <ListView fx:id="cachelistImages" prefHeight="200.0" prefWidth="200.0" />
-                                                               </content>
-                                                            </ScrollPane>
-                                                         </children>
-                                                      </AnchorPane>
-                                                      <AnchorPane fx:id="cacheimgAnchorParent">
-                                                         <children>
-                                                            <ImageView fx:id="cacheimgImage" fitHeight="761.0" fitWidth="689.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                         </children>
-                                                      </AnchorPane>
-                                                   </items>
-                                                </SplitPane>
-                                             </children>
-                                          </AnchorPane>
-                                    </content>
-                                  </Tab>
-                                </tabs>
-                              </TabPane>
+                                                            </AnchorPane>
+                                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                               <children>
+                                                                  <GridPane layoutX="104.0" layoutY="121.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                    <columnConstraints>
+                                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                    </columnConstraints>
+                                                                    <rowConstraints>
+                                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                        <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                    </rowConstraints>
+                                                                     <children>
+                                                                        <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
+                                                                          <content>
+                                                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+                                                                                 <children>
+                                                                                    <TextArea fx:id="cachetxtItemJson" editable="false" layoutX="164.0" layoutY="168.0" prefHeight="200.0" prefWidth="200.0" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                                 </children>
+                                                                              </AnchorPane>
+                                                                          </content>
+                                                                        </ScrollPane>
+                                                                     </children>
+                                                                  </GridPane>
+                                                               </children>
+                                                            </AnchorPane>
+                                                        </items>
+                                                      </SplitPane>
+                                                   </children>
+                                                </AnchorPane>
+                                          </content>
+                                        </Tab>
+                                        <Tab closable="false" text="Images">
+                                          <content>
+                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                   <children>
+                                                      <SplitPane dividerPositions="0.29797979797979796" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <items>
+                                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                               <children>
+                                                                  <ScrollPane fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                     <content>
+                                                                        <ListView fx:id="cachelistImages" prefHeight="200.0" prefWidth="200.0" />
+                                                                     </content>
+                                                                  </ScrollPane>
+                                                               </children>
+                                                            </AnchorPane>
+                                                            <AnchorPane fx:id="cacheimgAnchorParent">
+                                                               <children>
+                                                                  <ImageView fx:id="cacheimgImage" fitHeight="761.0" fitWidth="689.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                               </children>
+                                                            </AnchorPane>
+                                                         </items>
+                                                      </SplitPane>
+                                                   </children>
+                                                </AnchorPane>
+                                          </content>
+                                        </Tab>
+                                      </tabs>
+                                    </TabPane>
+                                    <Button mnemonicParsing="false" onAction="#OpenCacheInExplorer" text="Open cache in explorer">
+                                       <GridPane.margin>
+                                          <Insets left="4.0" />
+                                       </GridPane.margin>
+                                    </Button>
+                                 </children>
+                              </GridPane>
                            </children>
                         </AnchorPane>
                     </content>

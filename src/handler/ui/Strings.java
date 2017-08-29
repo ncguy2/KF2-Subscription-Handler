@@ -1,12 +1,18 @@
 package handler.ui;
 
+import handler.observable.ObservableValue;
+
 import java.io.File;
 
 public abstract class Strings {
-    
+
+    public static final String DIRECTORY_NAME = "KF2SubscriptionHandler";
+
     public static final String NULL = "";
     public static final String CURRENT_DIRECTORY = System.getProperty("user.dir");
-    
+    public static final String APPDATA_DIRECTORY = System.getenv("APPDATA") + File.separator + DIRECTORY_NAME + File.separator;
+
+
     public static final String WINDOW_TITLE = "KF2 Server Workshop Tool";
     public static final String WINDOW_BUTTON_CYCLE = "Refresh Map Cycle";
     public static final String WINDOW_BUTTON_SAVE = "Save Map Cycle";
@@ -38,17 +44,27 @@ public abstract class Strings {
         return "(" + fileName + ") File or privileges missing.";
     }
 
-    public static final String CACHE_ROOT_DIRECTORY = File.separator + "KF2SubscriptionHandler" + File.separator;
+    public static final String CACHE_ROOT_DIRECTORY = File.separator + DIRECTORY_NAME + File.separator;
 
     public static final String HTTP_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0";
     public static final String CACHE_IMAGE_FORMAT = "png";
+
+    public static final String APP_SETTINGS_FILE = APPDATA_DIRECTORY + "settings.json";
 
     public static final long KF2AppId = 232090L;
 
     public static class Mutable {
 
-        public static String WORKING_DIRECTORY = CURRENT_DIRECTORY;
+        public static ObservableValue<String> WORKING_DIRECTORY = new ObservableValue<>(CURRENT_DIRECTORY);
 
     }
-    
+
+    public static class Accessors {
+
+        public static String CacheDirectory() {
+            return Mutable.WORKING_DIRECTORY.GetValue() + CACHE_ROOT_DIRECTORY;
+        }
+
+    }
+
 }

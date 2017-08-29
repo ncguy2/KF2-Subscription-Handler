@@ -18,6 +18,7 @@ import handler.utils.JsonSerializer;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,6 +26,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -34,9 +40,12 @@ import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.util.Duration;
 
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class WindowController implements Initializable {
@@ -156,6 +165,21 @@ public class WindowController implements Initializable {
 
         ColorAdjust monochrome = new ColorAdjust();
         monochrome.setSaturation(-1);
+
+        Strings.Mutable.WORKING_DIRECTORY.AddListener((observable, oldValue, newValue) -> {
+            DisplayNotification("New working directory", newValue, Color.AQUAMARINE);
+            SteamCache.PopulateIndex();
+            InvalidateThemeList();
+            RefreshSubscriptions(null);
+            RefreshCycle(null);
+        });
+
+        SteamCache.PopulateIndex();
+        Platform.runLater(() -> {
+            RefreshSubscriptions(null);
+            RefreshCycle(null);
+        });
+
     }
 
     public void InvalidateThemeList() {
@@ -327,18 +351,12 @@ public class WindowController implements Initializable {
     public void SetDirectory(ActionEvent event) {
         DirectoryChooser dc = new DirectoryChooser();
         dc.setTitle("Select working directory");
-        dc.setInitialDirectory(new File(Strings.Mutable.WORKING_DIRECTORY));
+        dc.setInitialDirectory(new File(Strings.Mutable.WORKING_DIRECTORY.toString()));
         File directory = dc.showDialog(context.GetStage());
-        // TODO add notification to show to user that the working directory has changed
         if(directory != null) {
-            Strings.Mutable.WORKING_DIRECTORY = directory.getAbsolutePath();
-            SteamCache.PopulateIndex();
-            DisplayNotification("New working directory", Strings.Mutable.WORKING_DIRECTORY, Color.AQUAMARINE);
-            InvalidateThemeList();
-            RefreshSubscriptions(null);
-            RefreshCycle(null);
+            Strings.Mutable.WORKING_DIRECTORY.SetValue(directory.getAbsolutePath());
         }else{
-            DisplayNotification("No working directory, reverting...", Strings.Mutable.WORKING_DIRECTORY, Color.INDIANRED);
+            DisplayNotification("No working directory, reverting...", Strings.Mutable.WORKING_DIRECTORY.toString(), Color.INDIANRED);
         }
     }
 
@@ -495,7 +513,32 @@ public class WindowController implements Initializable {
 
     @FXML
     public Menu menuThemes;
+    @FXML
+    public TabPane cacheTabPane;
 
     private ColorAdjust monochrome;
+
+    @FXML
+    public void OpenCacheInExplorer(ActionEvent event) {
+        String dir = "";
+        SingleSelectionModel<Tab> selectionModel = cacheTabPane.getSelectionModel();
+        int selectedIndex = selectionModel.getSelectedIndex();
+        switch(selectedIndex) {
+            case 0: dir = "subscriptions"; break;
+            case 1: dir = "images"; break;
+        }
+        String path = Strings.Accessors.CacheDirectory() + "cache" + File.separator + dir + File.separator;
+        File file = new File(path);
+        if(file.exists()) {
+            try {
+                Desktop.getDesktop().open(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else {
+            new Toast("Open in explorer", "Cannot find directory", Toast.NotificationType.ERROR).ShowAndDismiss(Duration.seconds(5));
+            System.out.println("Directory: "+path);
+        }
+    }
 
 }

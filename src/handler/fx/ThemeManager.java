@@ -40,7 +40,7 @@ public class ThemeManager {
     }
 
     public static Optional<Map<String, String>> FindExternalThemes() {
-        String dir = Strings.Mutable.WORKING_DIRECTORY + ExternalThemeDir;
+        String dir = Strings.Mutable.WORKING_DIRECTORY.GetValue() + ExternalThemeDir;
         File f = new File(dir);
         if(!f.exists()) {
             f.mkdirs();

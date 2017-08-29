@@ -38,8 +38,8 @@ public class FXWindow extends Application {
 
         primaryStage.setTitle(Strings.WINDOW_TITLE);
         primaryStage.setResizable(true);
-        FXMLLoader loader = new FXMLLoader();
-        Parent root =  loader.load(getClass().getResource("/handler/fxml/Window.fxml").openStream());
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/handler/fxml/Window.fxml"));
+        Parent root = loader.load();
         controller = loader.getController();
         controller.context = this;
         stage = primaryStage;
