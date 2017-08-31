@@ -1,5 +1,6 @@
 package handler.fx;
 
+import handler.observable.ObservableValue;
 import handler.ui.Strings;
 import handler.utils.StringUtils;
 import javafx.scene.Scene;
@@ -13,11 +14,25 @@ import static handler.ui.Strings.CACHE_ROOT_DIRECTORY;
 
 public class ThemeManager {
 
-    public static String activeTheme = null;
+    public static ObservableValue<String> activeTheme = new ObservableValue<>("");
+    public static Scene targetScene = null;
     public static final String ExternalThemeDir = CACHE_ROOT_DIRECTORY + "themes";
 
+    static {
+        activeTheme.AddListener((observable, oldValue, newValue) -> {
+            if(targetScene == null) return;
+            if(targetScene.getStylesheets().contains(oldValue))
+                targetScene.getStylesheets().remove(oldValue);
+            if(!newValue.isEmpty())
+                targetScene.getStylesheets().add(newValue);
+        });
+    }
+
     public static void ApplyTheme(Scene scene) {
-        ApplyTheme(scene, activeTheme);
+        // TODO remove previous theme when applying to dialogs
+        if(scene == null) return;
+        if(!activeTheme.GetValue().isEmpty())
+            scene.getStylesheets().add(activeTheme.GetValue());
     }
 
     public static void ApplyTheme(Scene scene, Themes theme) {
@@ -31,12 +46,9 @@ public class ThemeManager {
     }
 
     public static void ApplyTheme(Scene scene, String theme) {
-        if(theme.equals(activeTheme)) return;
-        if(scene.getStylesheets().contains(activeTheme))
-            scene.getStylesheets().remove(activeTheme);
-        if(!theme.isEmpty())
-            scene.getStylesheets().add(theme);
-        activeTheme = theme;
+        if(theme.equals(activeTheme.toString())) return;
+        targetScene = scene;
+        activeTheme.SetValue(theme);
     }
 
     public static Optional<Map<String, String>> FindExternalThemes() {

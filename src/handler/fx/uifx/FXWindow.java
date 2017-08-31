@@ -45,7 +45,7 @@ public class FXWindow extends Application {
         stage = primaryStage;
 
         scene = new Scene(root);
-        ThemeManager.ApplyTheme(scene, ThemeManager.Themes.BOOTSTRAP_3);
+        ThemeManager.ApplyTheme(scene);
 
         primaryStage.setScene(scene);
         primaryStage.sizeToScene();

@@ -38,6 +38,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
 import java.awt.*;
@@ -172,7 +173,13 @@ public class WindowController implements Initializable {
             InvalidateThemeList();
             RefreshSubscriptions(null);
             RefreshCycle(null);
+            fieldSteamServerDir.setText(newValue);
         });
+
+        Strings.Mutable.STEAMCMD_PATH.AddListener((observable, oldValue, newValue) -> fieldSteamCMDExe.setText(newValue));
+
+        fieldSteamServerDir.setText(Strings.Mutable.WORKING_DIRECTORY.GetValue());
+        fieldSteamCMDExe.setText(Strings.Mutable.STEAMCMD_PATH.GetValue());
 
         SteamCache.PopulateIndex();
         Platform.runLater(() -> {
@@ -351,6 +358,7 @@ public class WindowController implements Initializable {
     public void SetDirectory(ActionEvent event) {
         DirectoryChooser dc = new DirectoryChooser();
         dc.setTitle("Select working directory");
+
         dc.setInitialDirectory(new File(Strings.Mutable.WORKING_DIRECTORY.toString()));
         File directory = dc.showDialog(context.GetStage());
         if(directory != null) {
@@ -515,8 +523,25 @@ public class WindowController implements Initializable {
     public Menu menuThemes;
     @FXML
     public TabPane cacheTabPane;
+    @FXML
+    public TextField fieldSteamServerDir;
+    @FXML
+    public TextField fieldSteamCMDExe;
 
     private ColorAdjust monochrome;
+
+    @FXML
+    public void BrowserForSteamCMD(ActionEvent event) {
+        FileChooser fc = new FileChooser();
+        String initial = Strings.Mutable.STEAMCMD_PATH.GetValue();
+        if(initial.isEmpty()) initial = Strings.Mutable.WORKING_DIRECTORY.GetValue();
+        fc.setInitialDirectory(new File(initial));
+        fc.setTitle("SteamCMD executable");
+        fc.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Executables", "*.exe"));
+        File file = fc.showOpenDialog(context.GetStage());
+        if(file == null) return;
+        Strings.Mutable.STEAMCMD_PATH.SetValue(file.getAbsolutePath());
+    }
 
     @FXML
     public void OpenCacheInExplorer(ActionEvent event) {

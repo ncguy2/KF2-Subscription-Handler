@@ -10,9 +10,14 @@ import handler.fx.IconLoader;
 import handler.fx.Icons;
 import handler.fx.ThemeManager;
 import handler.steam.SteamCache;
+import handler.steam.SteamCmdHandler;
+import handler.steam.SteamCmdProcessCallback;
+import handler.steam.SteamCommand;
 import javafx.animation.Animation;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
@@ -58,6 +63,7 @@ public class DetailController extends GridPane {
         imageThumb.setImage(IconLoader.LoadIcon(Icons.KF2_LOGO));
         fieldSubId.setText(sub.getId());
         fieldSubName.setText(sub.getName());
+//        SetRequiresDownload(sub.NeedsUpdate() || !sub.isOnDisk());
     }
 
     public void SetHasLoaded(boolean state) {
@@ -69,13 +75,46 @@ public class DetailController extends GridPane {
         if(sub == null) return;
         loaded = true;
         SteamCache.GetSubscriptionDetails(Long.parseLong(sub.getId()), details -> {
-            if(titlePane != null) {
+            if(titlePane != null)
                 FXUtils.TextTransition(titlePane, details.title, 2000).ifPresent(Animation::play);
-//                titlePane.setText(details.title);
-            }
             FXUtils.CreateTransition(imageThumb, SteamCache.GetRemoteImage(details.previewUrl)).play();
             fieldSubName.setText(details.title);
         });
+    }
+
+    public void SetRequiresDownload(boolean required) {
+        btnDownloadItem.setDisable(!required);
+    }
+
+    public boolean RequiresDownload() {
+        if(sub.isNative()) return false;
+        return sub.NeedsUpdate() || !sub.isOnDisk();
+    }
+
+    @FXML
+    public void AttemptDownload(ActionEvent event) {
+        if(sub.isNative()) return;
+        SetRequiresDownload(false);
+        SteamCommand cmd = SteamCommand.WorkshopItemCommand();
+        SteamCmdProcessCallback callback = new SteamCmdProcessCallback() {
+            @Override
+            public void OnSteamCMDDownloadSuccess() {
+                sub.setNeedsUpdate(false);
+                FXWindow.PostStatic(() -> titlePane.setGraphic(null));
+            }
+
+            @Override
+            public void CoreFunction(String line) {
+                super.CoreFunction(line);
+                System.out.print(line);
+            }
+
+            @Override
+            public void OnFinish() {
+                SetRequiresDownload(true);
+            }
+        };
+        SteamCmdHandler.ExecuteCommand(cmd, Long.parseLong(sub.getId()), callback);
     }
 
     @FXML
@@ -84,5 +123,7 @@ public class DetailController extends GridPane {
     private TextField fieldSubId;
     @FXML
     private TextField fieldSubName;
+    @FXML
+    private Button btnDownloadItem;
 
 }

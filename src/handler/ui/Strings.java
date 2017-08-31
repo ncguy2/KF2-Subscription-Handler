@@ -6,12 +6,16 @@ import java.io.File;
 
 public abstract class Strings {
 
+    public static final long KF2AppId = 232090L;
+
     public static final String DIRECTORY_NAME = "KF2SubscriptionHandler";
 
     public static final String NULL = "";
     public static final String CURRENT_DIRECTORY = System.getProperty("user.dir");
     public static final String APPDATA_DIRECTORY = System.getenv("APPDATA") + File.separator + DIRECTORY_NAME + File.separator;
-
+    public static final String BINARY_DIRECTORY = File.separator + "Binaries" + File.separator + "Win64" + File.separator;
+    public static final String WORKSHOP_DIRECTORY = BINARY_DIRECTORY + "steamapps" + File.separator + "workshop" + File.separator + "content" + File.separator + String.valueOf(KF2AppId) + File.separator;
+    public static final String CACHE_DIRECTORY = File.separator + "KFGame" + File.separator + "Cache" + File.separator;
 
     public static final String WINDOW_TITLE = "KF2 Server Workshop Tool";
     public static final String WINDOW_BUTTON_CYCLE = "Refresh Map Cycle";
@@ -51,11 +55,11 @@ public abstract class Strings {
 
     public static final String APP_SETTINGS_FILE = APPDATA_DIRECTORY + "settings.json";
 
-    public static final long KF2AppId = 232090L;
 
     public static class Mutable {
 
         public static ObservableValue<String> WORKING_DIRECTORY = new ObservableValue<>(CURRENT_DIRECTORY);
+        public static ObservableValue<String> STEAMCMD_PATH = new ObservableValue<>(NULL);
 
     }
 
@@ -64,6 +68,12 @@ public abstract class Strings {
         public static String CacheDirectory() {
             return Mutable.WORKING_DIRECTORY.GetValue() + CACHE_ROOT_DIRECTORY;
         }
+
+    }
+
+    public static class Commands {
+
+        public static final String WORKSHOP_ITEM = "+workshop_download_item " + String.valueOf(KF2AppId);
 
     }
 

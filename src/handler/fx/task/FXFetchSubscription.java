@@ -85,6 +85,7 @@ public class FXFetchSubscription extends FXBackgroundTask {
         if(value.isNative()) {
             titledPane.setGraphic(IconLoader.GetIcon(Icons.IS_NATIVE));
             titledPane.setTooltip(new Tooltip("Vanilla"));
+            content.SetRequiresDownload(false);
         }else if(!value.isOnDisk()) {
             titledPane.setGraphic(IconLoader.GetIcon(Icons.IN_CLOUD));
             titledPane.setTooltip(new Tooltip("Not downloaded"));
