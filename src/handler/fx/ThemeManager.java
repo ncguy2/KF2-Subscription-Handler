@@ -75,6 +75,7 @@ public class ThemeManager {
 
     public static enum Themes {
         DEFAULT(""),
+        DARK("modenaDark"),
         BOOTSTRAP_2("bootstrap2"),
         BOOTSTRAP_3("bootstrap3"),
         ;

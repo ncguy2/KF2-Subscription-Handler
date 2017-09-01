@@ -6,6 +6,7 @@ package handler.fx.uifx;
 //
 
 import handler.fx.ThemeManager;
+import handler.threading.TaskHandler;
 import handler.ui.Strings;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -26,11 +27,14 @@ public class FXWindow extends Application {
     protected WindowController controller;
     protected Stage stage;
     protected Scene scene;
+    protected TaskHandler taskHandler;
 
     protected static FXWindow mainContext;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+
+        taskHandler = new TaskHandler(this);
 
         if(mainContext == null) mainContext = this;
 
@@ -77,9 +81,17 @@ public class FXWindow extends Application {
         Platform.runLater(task);
     }
 
+    public TaskHandler GetTaskHandler() {
+        return taskHandler;
+    }
+
     public static void PostStatic(Runnable task) {
         if(mainContext == null) return;
         mainContext.Post(task);
+    }
+
+    public static FXWindow GetMainContext() {
+        return mainContext;
     }
 
 }

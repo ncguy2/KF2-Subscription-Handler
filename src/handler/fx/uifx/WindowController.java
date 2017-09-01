@@ -276,14 +276,13 @@ public class WindowController implements Initializable {
     }
 
     public void FilterList(String filter) {
-        filter = filter.toLowerCase().replaceAll("[^a-zA-Z0-9]", "");
         if(filter.startsWith(":")) {
             if(InternalFilter(filter)) {
                 return;
             }
         }
 
-        final String f = filter;
+        final String f = filter.toLowerCase().replaceAll("[^a-zA-Z0-9]", "");
 
         if(f.isEmpty() || f.startsWith(":"))
             accSubscriptions.getPanes().forEach(pane -> SetRowVisibility(pane, true));
