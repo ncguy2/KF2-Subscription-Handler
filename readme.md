@@ -19,6 +19,7 @@ I suggest checking "todo.txt" first, though. Some of those problems will be logg
 - Local cache to reduce delays caused by Http requests
 - Partial Workshop collection support ([u/Daar375](https://www.reddit.com/r/killingfloor/comments/6vxvra/if_anyone_is_interested_i_wrote_a_small_program/dm45n2b/))
 - Basic theming support
+- Extension support
 
 ## Plans
 
@@ -30,3 +31,9 @@ I suggest checking "todo.txt" first, though. Some of those problems will be logg
 ## Development Limitations
 
 - Steam API requests may be refused if too many are sent at once due to the "10 requests per 10 seconds" rule. Try to use the cache-aware functions where applicable
+
+# Extension development guidelines
+
+- The core extension class should extend the `handler.extensions.IExtension` class
+- A `handler.extensions.IExtension` file should be located in `META-INF/services`, containing the classpaths of any class that extends `IExtension`
+- A sample extension can be found [here](https://github.com/ncguy2/KF2-Subscription-Handler/tree/master/CoreExtension)
