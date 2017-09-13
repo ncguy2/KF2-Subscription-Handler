@@ -1,5 +1,6 @@
 package handler.fx.task;
 
+import handler.domain.Subscription;
 import handler.files.KF2Files;
 import handler.fx.uifx.CollectionDialog;
 import handler.fx.uifx.FXWindow;
@@ -8,19 +9,26 @@ import handler.steam.CollectionDetails;
 import handler.steam.SteamApi;
 import handler.steam.SteamCache;
 import handler.steam.SubscriptionDetails;
+import javafx.scene.control.TitledPane;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public class FXLoadCollection extends FXBackgroundTask {
 
-    public FXLoadCollection(FXWindow context) {
+    private final String query;
+    private final BiConsumer<Subscription, TitledPane> addSubPane;
+
+    public FXLoadCollection(FXWindow context, String query, BiConsumer<Subscription, TitledPane> addSubPane) {
         super(context);
+        this.query = query;
+        this.addSubPane = addSubPane;
     }
 
     @Override
     public void run() {
-        final String text = controller.fieldCollection.getText();
-        controller.fieldCollection.setText("");
+        final String text = query;
+
         long l = Long.parseLong(text);
         HttpRequest<CollectionDetails.CollectionDetailSet> request = SteamApi.Functions.GetCollectionDetails(l);
         context.Post(() -> {
@@ -38,7 +46,7 @@ public class FXLoadCollection extends FXBackgroundTask {
                             e.printStackTrace();
                         }
                     });
-                    new FXFetchSubscription(context).start();
+                    new FXFetchSubscription(context, addSubPane).start();
                 }catch (Exception e) {
                     e.printStackTrace();
                 }

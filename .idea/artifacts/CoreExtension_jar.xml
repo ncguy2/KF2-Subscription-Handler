@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="CoreExtension:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/CoreExtension_jar</output-path>
+    <root id="archive" name="CoreExtension.jar">
+      <element id="module-output" name="CoreExtension" />
+      <element id="directory" name="META-INF">
+        <element id="dir-copy" path="$PROJECT_DIR$/CoreExtension/META-INF" />
+      </element>
+    </root>
+  </artifact>
+</component>

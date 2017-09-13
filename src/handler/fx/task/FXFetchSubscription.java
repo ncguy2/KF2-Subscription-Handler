@@ -17,32 +17,38 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.paint.Color;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 public class FXFetchSubscription extends FXBackgroundTask {
 
-    public FXFetchSubscription(FXWindow context) {
+    private final BiConsumer<Subscription, TitledPane> addSubPane;
+
+    public FXFetchSubscription(FXWindow context, BiConsumer<Subscription, TitledPane> addSubPane) {
         super(context);
+        this.addSubPane = addSubPane;
     }
 
     @Override
     public void run() {
-        controller.btnSubscribe.setDisable(true);
-        controller.btnRefreshSubscriptions.setDisable(true);
-        context.Post(() -> controller.accSubscriptions.getPanes().clear());
+
         try {
 
             int index = 0;
-            for (String s : KF2Files.GetNativeMaps()) {
+            Map<String, String> map = KF2Files.NativeMaps();
+            for (Map.Entry<String, String> s : map.entrySet()) {
                 Subscription sub = new Subscription(String.valueOf(index++));
-                sub.setName(s);
+                sub.setName(s.getKey());
                 sub.setNative(true);
                 sub.setOnDisk(true);
 
                 TitledPane pane = BuildPane(sub);
+                pane.textProperty().setValue(s.getValue());
                 Node content = pane.getContent();
                 if(content instanceof DetailController)
                     ((DetailController)content).SetHasLoaded(true);
-                context.Post(() -> controller.AddSubscriptionPane(sub, pane));
+//                context.Post(() -> controller.AddSubscriptionPane(sub, pane));
+                context.Post(() -> addSubPane.accept(sub, pane));
             }
 
             Collection<Subscription> values = KF2Files.getSubscriptions().values();
@@ -53,16 +59,16 @@ public class FXFetchSubscription extends FXBackgroundTask {
                     TitledPane pane = BuildPane(value);
                     if(pane.getUserData() != null && "Unknown".equalsIgnoreCase(pane.getUserData().toString()))
                         unknowns[0]++;
-                    controller.AddSubscriptionPane(value, pane);
+                    context.Post(() -> addSubPane.accept(value, pane));
+//                    controller.AddSubscriptionPane(value, pane);
                 });
-                controller.DisplayNotification("Unknown subscriptions detected", "We found " + unknowns[0] + " subscriptions that we could not determine properly.", Color.AQUAMARINE);
+                if(unknowns[0] > 0)
+                    controller.DisplayNotification("Unknown subscriptions detected", "We found " + unknowns[0] + " subscriptions that we could not determine properly.", Color.AQUAMARINE);
             });
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        controller.btnSubscribe.setDisable(false);
-        controller.btnRefreshSubscriptions.setDisable(false);
     }
 
     protected TitledPane BuildPane(Subscription value) {

@@ -20,12 +20,13 @@ public class Main {
                 useLegacy = true;
         }
 
-        SteamCache.PopulateIndex();
 
         applicationSettings = new AppSettingsHandler();
         if(!applicationSettings.Load()) {
             applicationSettings.Pop().Save();
         }else applicationSettings.Push();
+
+        SteamCache.PopulateIndex();
 
         if(useLegacy)
             SwingUtilities.invokeLater(Window::new);

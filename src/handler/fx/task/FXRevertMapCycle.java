@@ -5,12 +5,16 @@ import handler.files.KF2Files;
 import handler.fx.uifx.FXWindow;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class FXRevertMapCycle extends FXBackgroundTask {
 
-    public FXRevertMapCycle(FXWindow context) {
+    private final Consumer<List<Subscription>> setAll;
+
+    public FXRevertMapCycle(FXWindow context, Consumer<List<Subscription>> setAll) {
         super(context);
+        this.setAll = setAll;
     }
 
     @Override
@@ -27,7 +31,8 @@ public class FXRevertMapCycle extends FXBackgroundTask {
                 })
                 .collect(Collectors.toList());
         context.Post(() -> {
-            controller.listCycle.getItems().setAll(vanillaSubs);
+            setAll.accept(vanillaSubs);
+//            controller.listCycle.getItems().setAll(vanillaSubs);
         });
     }
 }

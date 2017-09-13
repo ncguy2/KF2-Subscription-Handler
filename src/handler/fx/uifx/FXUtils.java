@@ -4,12 +4,16 @@ import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Transition;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.util.Optional;
 
 public class FXUtils {
@@ -62,6 +66,40 @@ public class FXUtils {
                 control.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
+    }
+
+    public static <T> Optional<FXMLFragment<T>> LoadFragmentSafe(String fxmlCp, Class<?> resourceRoot) {
+        try {
+            FXMLFragment<T> fragment = LoadFragment(fxmlCp, resourceRoot);
+            return Optional.of(fragment);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
+    public static <T> FXMLFragment<T> LoadFragment(String fxmlCp, Class<?> resourceRoot) throws IOException {
+        FXMLLoader loader = new FXMLLoader(resourceRoot.getResource(fxmlCp));
+        loader.setClassLoader(resourceRoot.getClassLoader());
+        Parent p = loader.load();
+        T ctrlr = loader.getController();
+        FXMLFragment<T> fragment = new FXMLFragment<>(p, ctrlr);
+        fragment.loader = loader;
+        return fragment;
+    }
+
+    public static class FXMLFragment<T> {
+        public FXMLLoader loader;
+        public Node rootNode;
+        public T controller;
+
+        public FXMLFragment() { this(null); }
+        public FXMLFragment(Node rootNode) { this(rootNode, null); }
+
+        public FXMLFragment(Node rootNode, T controller) {
+            this.rootNode = rootNode;
+            this.controller = controller;
+        }
     }
 
 }

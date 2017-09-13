@@ -6,18 +6,21 @@ import handler.fx.uifx.FXWindow;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class FXFetchMapCycle extends FXBackgroundTask {
 
-    public FXFetchMapCycle(FXWindow context) {
+    private final Consumer<Subscription> subTask;
+
+    public FXFetchMapCycle(FXWindow context, Consumer<Subscription> subTask) {
         super(context);
+        this.subTask = subTask;
     }
 
     @Override
     public void run() {
-        controller.btnRefreshCycle.setDisable(true);
-        context.Post(controller.listCycle.getItems()::clear);
+
         try {
             List<String> ids = KF2Files.getMapCycle();
             Map<String, Subscription> subscriptions = KF2Files.getSubscriptions();
@@ -34,12 +37,14 @@ public class FXFetchMapCycle extends FXBackgroundTask {
 
                 if(sub != null) {
                     Subscription finalSub = sub;
-                    context.Post(() -> controller.listCycle.getItems().add(finalSub));
+                    context.Post(() -> {
+                        subTask.accept(finalSub);
+//                        controller.listCycle.getItems().add(finalSub)
+                    });
                 } else System.out.println("[WARN] No subscription found with id: " + id);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        controller.btnRefreshCycle.setDisable(false);
     }
 }

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/CoreExtension/CoreExtension.iml" filepath="$PROJECT_DIR$/CoreExtension/CoreExtension.iml" group="Extensions" />
       <module fileurl="file://$PROJECT_DIR$/.idea/KF2-Subscription-Handler.iml" filepath="$PROJECT_DIR$/.idea/KF2-Subscription-Handler.iml" />
     </modules>
   </component>

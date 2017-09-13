@@ -2,10 +2,12 @@ package handler.files;
 
 import handler.ui.Strings;
 import handler.domain.Subscription;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
+import handler.utils.StringUtils;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -20,6 +22,8 @@ public abstract class KF2Files {
     private static final String KFEngine = "\\KFGame\\Config\\PCServer-KFEngine.ini";
     private static final String KFGame = "\\KFGame\\Config\\PCServer-KFGame.ini";
     private static final String Cache = "\\KFGame\\Cache";
+    private static final String Localization = "\\KFGame\\Localization";
+    private static final String LocalizationPattern = Localization + "\\%s\\%s.%s";
 
     private static final String DefaultGame = "\\KFGame\\Config\\DefaultGame.ini";
     
@@ -149,33 +153,136 @@ public abstract class KF2Files {
         return builder.toString();
     }
 
-    private static List<String> nativeMaps = null;
+    public static Map<String, String> GetINIBlock(String blockHeader, String iniFile) throws IOException {
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(Strings.Mutable.WORKING_DIRECTORY + iniFile), "UTF-8"));
+        File file = new File(Strings.Mutable.WORKING_DIRECTORY + iniFile);
+        Path path = file.toPath();
+        List<String> strings = Files.readAllLines(path, StandardCharsets.UTF_16LE);
+
+        Map<String, String> iniBlock = new HashMap<>();
+        boolean foundBlock = false;
+        for (String readLine : strings) {
+            if(readLine.isEmpty()) continue;
+            if(readLine.contains(blockHeader)) {
+                foundBlock = true;
+                continue;
+            }
+            if(!foundBlock) continue;
+
+            if(readLine.startsWith("["))
+                break;
+
+            int i = readLine.indexOf('=');
+            if(i <= -1) continue;
+            String key = readLine.substring(0, i);
+            String value = readLine.substring(i+1);
+            iniBlock.put(key, value);
+        }
+        return iniBlock;
+    }
+
+    // TODO support different localizations
+    private static final Map<String, String> nativeMaps = new HashMap<>();
+
+    public static Optional<Map<String, String>> GetI18NINIBlock(String mapName, I18N i18n) {
+        try {
+            return Optional.of(GetINIBlock("["+mapName+" KFMapSummary]", String.format(LocalizationPattern, i18n.Name(), "KFGame", i18n.Ext())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
+    public static I18N activeLoc = I18N.INT;
 
     private static void LoadNativeMaps() throws Exception {
         String mapString = readMapCycle(new File(Strings.Mutable.WORKING_DIRECTORY + DefaultGame));
         mapString = mapString.split("\\(")[2].replaceAll("\"", "");
         List<String> maps = Arrays.asList(mapString.replaceAll("\\)", "").split(","));
         nativeMaps.clear();
-        nativeMaps.addAll(maps);
+
+        for (String map : maps) {
+            Optional<Map<String, String>> i18nMap = GetI18NINIBlock(map, activeLoc);
+            String name = map;
+            if(i18nMap.isPresent()) {
+                Map<String, String> loc = i18nMap.get();
+                String s = loc.get("DisplayName_" + activeLoc.Name());
+                if(s != null) name = StringUtils.Trim(s, '"');
+            }
+            nativeMaps.put(map, name);
+        }
     }
 
-    public static List<String> GetNativeMaps() {
-        if(nativeMaps == null) {
-            nativeMaps = new ArrayList<>();
+    public static Map<String, String> NativeMaps() {
+        if(nativeMaps.isEmpty()) {
             try {
                 LoadNativeMaps();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            System.out.println(nativeMaps.size());
         }
         return nativeMaps;
     }
 
+    public static Collection<String> GetNativeMaps() {
+        return NativeMaps().keySet();
+    }
+
+    public static Collection<String> GetNativeMapNames() {
+        return NativeMaps().values();
+    }
+
     public static boolean IsNativeMap(String name) {
-        return GetNativeMaps().contains(name);
+        Collection<String> strings = GetNativeMaps();
+        return strings.contains(name);
     }
     public static int NativeIndex(String name) {
-        return GetNativeMaps().indexOf(name);
+        return StringUtils.IndexOf(GetNativeMaps(), name);
+    }
+
+    public static enum I18N {
+        CHN("Chinese"),
+        CHT("Chinese-Traditional"),
+        CZE("Czech"),
+        DAN("Danish"),
+        DEU("German"),
+        DUT("Dutch"),
+        ESL("Spanish"),
+        ESN("Spanish-European"),
+        FRA("French"),
+        FRC("French-Canadian"),
+        HUN("Hungarian"),
+        INT("English"),
+        ITA("Italian"),
+        JPN("Japanese"),
+        KOR("Korean"),
+        POL("Polish"),
+        POR("Portuguese"),
+        PTB("Portuguese-Brazilian"),
+        RUS("Russian"),
+        TUR("Turkish"),
+        UKR("Ukranian"),
+        ;
+
+        public final String displayName;
+
+        I18N() {
+            this.displayName = StringUtils.ToDisplayCase(name());
+        }
+
+        I18N(String name) {
+            this.displayName = StringUtils.ToDisplayCase(name);
+        }
+
+        public String Name() {
+            return name();
+        }
+
+        public String Ext() {
+            return name().toLowerCase();
+        }
+
     }
 
 }

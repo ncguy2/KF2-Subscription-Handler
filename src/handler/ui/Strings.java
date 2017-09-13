@@ -1,5 +1,6 @@
 package handler.ui;
 
+import handler.extensions.IExtension;
 import handler.observable.ObservableValue;
 
 import java.io.File;
@@ -49,12 +50,13 @@ public abstract class Strings {
     }
 
     public static final String CACHE_ROOT_DIRECTORY = File.separator + DIRECTORY_NAME + File.separator;
+    public static final String CACHE_EXTENSION_DIRECTORY = CACHE_ROOT_DIRECTORY + "Extensions" + File.separator;
 
+    // TODO change user agent to be more accurate
     public static final String HTTP_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0";
     public static final String CACHE_IMAGE_FORMAT = "png";
 
     public static final String APP_SETTINGS_FILE = APPDATA_DIRECTORY + "settings.json";
-
 
     public static class Mutable {
 
@@ -67,6 +69,38 @@ public abstract class Strings {
 
         public static String CacheDirectory() {
             return Mutable.WORKING_DIRECTORY.GetValue() + CACHE_ROOT_DIRECTORY;
+        }
+
+        public static String InstanceExtensionDirectory() {
+            return CURRENT_DIRECTORY + File.separator + "Extensions";
+        }
+
+        public static String ExtensionDirectory() {
+            return Mutable.WORKING_DIRECTORY.GetValue() + CACHE_EXTENSION_DIRECTORY;
+        }
+
+        public static String ExtensionDirectory(IExtension extension) {
+            return ExtensionDirectory() + extension.Id() + File.separator;
+        }
+
+        public static File ExtensionDirFile(IExtension extension) {
+            return new File(ExtensionDirectory(extension));
+        }
+
+        public static String ExtensionStorageDirectory(IExtension extension) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(CacheDirectory())
+                    .append("cache")
+                    .append(File.separator)
+                    .append("Extensions")
+                    .append(File.separator)
+                    .append(extension.Id())
+                    .append(File.separator);
+            return sb.toString();
+        }
+
+        public static File ExtensionStorageDirFile(IExtension extension) {
+            return new File(ExtensionStorageDirectory(extension));
         }
 
     }

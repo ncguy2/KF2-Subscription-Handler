@@ -28,6 +28,7 @@ public class SteamCmdProcessCallback {
     public void OnSteamCMDUserInfoSuccess() {}
     public void OnSteamCMDDownloadStart() {}
     public void OnSteamCMDDownloadSuccess() {}
+    public void OnSteamCMDDownloadProgress(float perc) {}
 
     public void OnFinish() {}
 

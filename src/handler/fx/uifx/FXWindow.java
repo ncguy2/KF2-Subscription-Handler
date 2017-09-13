@@ -33,6 +33,7 @@ public class FXWindow extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+        stage = primaryStage;
 
         taskHandler = new TaskHandler(this);
 
@@ -45,8 +46,6 @@ public class FXWindow extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/handler/fxml/Window.fxml"));
         Parent root = loader.load();
         controller = loader.getController();
-        controller.context = this;
-        stage = primaryStage;
 
         scene = new Scene(root);
         ThemeManager.ApplyTheme(scene);

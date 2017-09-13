@@ -40,4 +40,8 @@ public class FileUtils {
             parent.mkdirs();
     }
 
+    public static boolean IsJar(File file) {
+        return file.getPath().toLowerCase().endsWith(".jar");
+    }
+
 }

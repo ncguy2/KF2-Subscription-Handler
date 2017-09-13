@@ -5,26 +5,31 @@ package handler.fx.task;
 // Created at: 25/08/2017
 //
 
+import handler.domain.Subscription;
 import handler.fx.uifx.DetailController;
 import handler.fx.uifx.FXWindow;
 import javafx.scene.Node;
 import javafx.scene.control.Accordion;
 
+import java.util.function.Consumer;
+
 public class FXAddMapToCycle extends FXBackgroundTask {
 
-    public FXAddMapToCycle(FXWindow context) {
+    private final Accordion accordion;
+    private final Consumer<Subscription> addSub;
+
+    public FXAddMapToCycle(FXWindow context, Accordion accordion, Consumer<Subscription> AddSub) {
         super(context);
+        this.accordion = accordion;
+        addSub = AddSub;
     }
 
     @Override
     public void run() {
-        Accordion accordion = controller.accSubscriptions;
         Node content = accordion.getExpandedPane().getContent();
         if(content instanceof DetailController) {
             DetailController details = (DetailController)content;
-            context.Post(() -> {
-                controller.AddSubToCycle(details.GetSubscription());
-            });
+            context.Post(() -> addSub.accept(details.GetSubscription()));
         }
     }
 }

@@ -1,5 +1,6 @@
 package handler.fx.task;
 
+import handler.domain.Subscription;
 import handler.files.KF2Files;
 import handler.fx.IconLoader;
 import handler.fx.Icons;
@@ -9,25 +10,25 @@ import handler.fx.uifx.WorkshopDialog;
 import handler.steam.SteamCache;
 import handler.steam.SubscriptionDetails;
 import handler.ui.Strings;
+import javafx.scene.control.TitledPane;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class FXAddSubscription extends FXBackgroundTask {
 
-    public FXAddSubscription(FXWindow context) {
+    private final String query;
+    private final BiConsumer<Subscription, TitledPane> addSubPane;
+
+    public FXAddSubscription(FXWindow context, String query, BiConsumer<Subscription, TitledPane> addSubPane) {
         super(context);
+        this.query = query;
+        this.addSubPane = addSubPane;
     }
 
     @Override
     public void run() {
-        controller.btnSubscribe.setDisable(true);
-        try {
-            QueryWorkshopItem(controller.fieldSubscription.getText());
-            controller.fieldSubscription.setText("");
-        }catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        controller.btnSubscribe.setDisable(false);
+        QueryWorkshopItem(query);
     }
 
     protected void QueryWorkshopItem(final String id) {
@@ -41,8 +42,7 @@ public class FXAddSubscription extends FXBackgroundTask {
             dialog.SetOnConfirm(d -> {
                 try {
                     KF2Files.addSubscription(Integer.parseInt(id));
-                    new FXFetchSubscription(context).start();
-                    controller.fieldSubscription.setText("");
+                    new FXFetchSubscription(context, addSubPane).start();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

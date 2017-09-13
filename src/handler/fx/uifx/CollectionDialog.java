@@ -4,7 +4,6 @@ import handler.files.KF2Files;
 import handler.fx.IconLoader;
 import handler.fx.Icons;
 import handler.fx.ThemeManager;
-import handler.fx.task.FXFetchSubscription;
 import handler.steam.SubscriptionDetails;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -148,7 +147,8 @@ public class CollectionDialog extends Dialog<Boolean> {
                 .map(sub -> Integer.parseInt(sub.publishedfileid))
                 .forEach(KF2Files::AddSubscription);
 
-        new FXFetchSubscription(context).start();
+        if(onConfirm != null)
+            onConfirm.accept(this);
         CloseDialog(true);
     }
     @FXML
