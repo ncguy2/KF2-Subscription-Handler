@@ -32,7 +32,7 @@ I suggest checking "todo.txt" first, though. Some of those problems will be logg
 
 - Steam API requests may be refused if too many are sent at once due to the "10 requests per 10 seconds" rule. Try to use the cache-aware functions where applicable
 
-# Extension development guidelines
+## Extension development guidelines
 
 - The core extension class should extend the `handler.extensions.IExtension` class
 - A `handler.extensions.IExtension` file should be located in `META-INF/services`, containing the classpaths of any class that extends `IExtension`

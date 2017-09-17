@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="ControlledDifficulty" />
+        <module name="CoreExtension" />
+        <module name="KF2-Subscription-Handler" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="ControlledDifficulty" target="1.8" />
+      <module name="CoreExtension" target="1.8" />
+      <module name="KF2-Subscription-Handler" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

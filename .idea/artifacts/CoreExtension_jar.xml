@@ -4,7 +4,7 @@
     <root id="archive" name="CoreExtension.jar">
       <element id="module-output" name="CoreExtension" />
       <element id="directory" name="META-INF">
-        <element id="dir-copy" path="$PROJECT_DIR$/CoreExtension/META-INF" />
+        <element id="dir-copy" path="$PROJECT_DIR$/CoreExtension/resources/META-INF" />
       </element>
     </root>
   </artifact>
